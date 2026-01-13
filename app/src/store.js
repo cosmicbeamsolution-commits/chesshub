@@ -15,7 +15,7 @@ export default new Vuex.Store({
     games: games,
     status: null,
     auth: JSON.parse(localStorage.getItem('auth')) || {},
-    endpoint: (process.env.NODE_ENV === 'production' ? 'https://flitz-api.overlemon.com' : 'http://192.168.2.105:4000')
+    endpoint: (process.env.NODE_ENV === 'production' ? 'https://chesshub-api.overlemon.com' : 'http://192.168.2.105:4000')
   },
   mutations: {
     /* A fit-them-all commit */
