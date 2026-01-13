@@ -1,0 +1,28 @@
+@charset "utf-8";
+
+// Import a Google Font
+// @import url('https://fonts.googleapis.com/css?family=Nunito:700,800,800i,900&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+// Set your brand colors
+$purple: #8A4D76;
+$pink: #FA7C91;
+$brown: #404040;
+$beige-light: #D0D1CD;
+$beige-lighter: #EFF0EB;
+
+// Update Bulma's global variables
+$family-sans-serif: 'Open Sans', sans-serif;
+$box-shadow: none;
+$control-border-width: 2px;
+$tabs-toggle-link-radius: 10px;
+$tabs-boxed-link-radius: 10px;
+$input-shadow: none;
+$danger: #ea4335;
+$grey: #818181;
+$info: #1ab7ea;
+$warning: #f46f30;
+$success: #00ab6b;
+$table-background-color: transparent;
+$table-striped-row-even-background-color:#f3f3f3;
+@import '~bulma/bulma';

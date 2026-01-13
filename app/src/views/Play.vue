@@ -1,0 +1,1433 @@
+<template>
+  <div :class="boardColor">
+    <div class="status" v-show="!gameStarted">
+      <span class="button is-info is-small">
+        <span class="icon">
+          <span class="mdi mdi-clock">
+          </span>
+        </span>
+      </span>
+    </div>
+    <div class="container is-widescreen"  :class="{ 'is-semitransparent': !gameStarted }">
+      <div class="content expand">
+        <div class="columns expand gap-2">
+          <div class="column expand">
+            <div class="board-container">
+              <div class="board" :class="{ 'black' : orientation === 'black' }">
+                <div class="score-container">
+                  <div class="score" :style="'max-height:' + vscore + '%'"></div>
+                </div>
+                <div id="board" class="is-clickable"></div>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="board-assistant">
+              <div class="columns is-mobile has-text-centered w-100">
+                <div class="column is-paddingless">
+                  <span class="is-size-6">
+                    <span class="icon">
+                      <span class="mdi mdi-checkbox-blank-circle has-text-white"></span>
+                    </span>
+                    <span class="icon">
+                      <span v-html="data.whiteflag"></span>
+                    </span>
+                    <span v-html="data.white"></span>
+                    <!--span class="has-text-grey" v-html="data.whiteelo"></span-->
+                  </span>
+                  <span v-show="data.result==='1-0'" class="icon">
+                    <span class="mdi mdi-trophy is-size-7 has-text-warning"></span>
+                  </span>
+                </div>
+                <div class="column is-paddingless">
+                  <span class="is-size-6">
+                    <span class="icon">
+                      <span class="mdi mdi-checkbox-blank-circle has-text-black"></span>
+                    </span>
+                    <span class="icon">
+                      <span v-html="data.blackflag"></span>
+                    </span>
+                    <span v-html="data.black"></span>
+                    <!--span class="has-text-grey" v-html="data.blackelo"></span-->
+                  </span>
+                  <span v-show="data.result==='0-1'" class="icon">
+                    <span class="mdi mdi-trophy is-size-7 has-text-warning"></span>
+                  </span>
+                </div>
+              </div>
+              <div class="columns is-hidden-mobile">
+                <div class="column has-text-right">
+                  <span class="button is-large" :class="{ 'has-background-white has-text-black' : timer.w > 10, 'has-background-danger has-text-white' : timer.w <= 10}">
+                    <span class="icon">
+                      <span class="mdi mdi-clock-fast"></span>
+                    </span>
+                    <span class="clock-text" v-html="tdisplay.w"></span>
+                  </span>
+                </div>
+                <div class="column has-text-left">
+                  <span class="button is-large" :class="{ 'has-background-black has-text-white' : timer.b > 10, 'has-background-danger has-text-white' : timer.b <= 10}">
+                    <span class="icon">
+                      <span class="mdi mdi-clock-fast"></span>
+                    </span>
+                    <span class="clock-text" v-html="tdisplay.b"></span>
+                  </span>
+                </div>
+              </div>
+              <div class="columns is-hidden-tablet is-mobile">
+                <div class="column has-text-centered">
+                  <span class="button is-small" :class="{ 'has-background-white has-text-black' : timer.w > 10, 'has-background-danger has-text-white' : timer.w <= 10}">
+                    <span class="icon">
+                      <span class="mdi mdi-clock-fast"></span>
+                    </span>
+                    <span class="clock-text" v-html="tdisplay.w"></span>
+                  </span>
+                </div>
+                <div class="column has-text-centered">
+                  <span class="button is-small" :class="{ 'has-background-black has-text-white' : timer.b > 10, 'has-background-danger has-text-white' : timer.b <= 10}">
+                    <span class="icon">
+                      <span class="mdi mdi-clock-fast"></span>
+                    </span>
+                    <span class="clock-text" v-html="tdisplay.b"></span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="columns has-text-centered">
+                <div class="column">
+                  <div class="buttons levels has-addons" :title="'game_settings' | t">
+                    <button @click="gameCapitulate()" class="button is-medium is-danger" v-show="pgnIndex.length && !announced_game_over" title="Abandonar partida">
+                      <span class="icon has-text-white">
+                        <span class="mdi mdi-flag"></span>
+                      </span>
+                    </button>
+                    <button @click="gameAskForDraw()" class="button is-medium is-success" v-show="pgnIndex.length && !announced_game_over" title="Solicitar tablas">
+                      <span class="icon has-text-white">
+                        <span class="mdi mdi-handshake"></span>
+                      </span>
+                    </button>
+                    <!--button @click="showPGN()" class="button is-small is-info" v-if="pgnIndex.length && announced_game_over" title="Mostrar PGN">
+                      <strong>PGN</strong>
+                    </button-->
+                  </div>
+                </div>
+              </div>
+              <!--div class="columns has-text-centered">
+                <pre v-html="performance"/>  ½
+                <div class="column">
+                  <table class="table">
+                    <tr v-for="(row, i) in performance" :key="i">
+                      <td>{{row.player}}</td>
+                      <td v-for="(item, j) in row.partials" :key="j">{{item}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div-->
+
+              <div class="columns has-text-centered">
+                <div class="column">
+                  <div class="field gap-1">
+                    <strong class="has-text-grey is-size-5">{{ eco }}</strong>
+                    <span class="has-text-weight-bold is-size-5">{{ opening }}</span>
+                  </div>
+                  <div v-show="match.results" id="matchresults" class="columns is-mobile is-narrow">
+                    <div class="column is-3">
+                      <div class="">
+                        <strong v-if="data.white > data.black">{{ data.white }}</strong>
+                        <strong v-else>{{ data.black }}</strong>
+                      </div>
+                      <div>
+                        <strong v-if="data.white > data.black">{{ data.black }}</strong>
+                        <strong v-else>{{ data.white }}</strong>
+                      </div>
+                    </div>
+                    <div class="column is-1" v-for="(item, index) in match.results" :key="index">
+                      <div>
+                        <span class="tag" :class="{ 'is-grey': item[0] === 0.5, 'is-success': item[0] === 1, 'is-danger': item[0] === 0 }">
+                          <span v-if="item[0] === 0.5">½</span>
+                          <span v-else>{{ item[0] }}</span>
+                        </span>
+                      </div>
+                      <div class="">
+                        <span class="tag" :class="{ 'is-grey': item[1] === 0.5, 'is-success': item[1] === 1, 'is-danger': item[1] === 0 }">
+                          <span v-if="item[1] === 0.5">½</span>
+                          <span v-else>{{ item[1] }}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tabs is-boxed is-hidden-mobile">
+                <ul>
+                  <li :class="{ 'is-active' : tab === 'chat' }">
+                    <a @click="tab = 'chat'" title="Chat">
+                      <span class="icon"><i class="mdi mdi-comment-text-outline" aria-hidden="true"></i></span>
+                    </a>
+                  </li>
+                  <li :class="{ 'is-active' : tab === 'pgn' }">
+                    <a @click="tab = 'pgn'" title="Plys">
+                      <span class="icon"><i class="mdi mdi-view-list" aria-hidden="true"></i></span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div v-show="tab === 'pgn'" class="is-hidden-mobile">
+                <div class="columns">
+                  <div class="chart-container">
+                    <div :class="playerColor">
+                      <div class="chart-indicator"></div>
+                      <div class="chart" v-show="pgnIndex.length"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="columns">
+                  <div v-show="pgnIndex.length" class="movesTableContainer">
+                    <div class="movesTable">
+                      <div class="moveRow" v-for="(move,index) in pgnIndex" :key="index">
+                        <div class="moveNumCell" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
+                          <span v-html="(index+1)"></span>
+                        </div>
+                        <div class="moveCell moveSAN movew" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
+                          <a :class="'moveindex m' + (move.i-2)" @click="gamePos(move.i-2)">
+                            <span v-html="move.white"></span>
+                            <span v-if="annotations[index * 2]" class="icon">
+                              <span class="mdi" :class="{ 'mdi-sticker-plus' : annotations[index * 2] === '$1', 'mdi-sticker-check' : annotations[index * 2] === '$3', 'mdi-sticker-minus' : annotations[index * 2] === '$2', 'mdi-sticker-remove' : annotations[index * 2] === '$4', 'mdi-book-open': annotations[index * 2] === '$12', 'mdi-sticker-alert': annotations[index * 2] === '$14', 'mdi-sticker-emoji': annotations[index * 2] === '$15'}"></span>
+                            </span>
+                            <span v-if="performance[index * 2]">
+                              <small> {{ performance[index * 2] }}</small>
+                            </span>
+                          </a>
+                        </div>
+                        <div class="moveCell moveSAN moveb" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
+                          <a :class="'moveindex m' + (move.i-1)" @click="gamePos(move.i-1)">
+                            <span v-html="move.black"></span>
+                            <span v-if="annotations[index * 2 + 1]" class="icon">
+                              <span class="mdi" :class="{ 'mdi-sticker-plus' : annotations[index * 2 + 1] === '$1', 'mdi-sticker-check' : annotations[index * 2 + 1] === '$3', 'mdi-sticker-minus' : annotations[index * 2 + 1] === '$2', 'mdi-sticker-remove' : annotations[index * 2 + 1] === '$4', 'mdi-book-open': annotations[index * 2 + 1] === '$12', 'mdi-sticker-alert': annotations[index * 2 + 1] === '$14', 'mdi-sticker-emoji': annotations[index * 2 + 1] === '$15'}"></span>
+                            </span>
+                            <span v-if="performance[index * 2 + 1]">
+                              <small> {{ performance[index * 2 + 1] }}</small>
+                            </span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-show="tab === 'chat'">
+                <div class="has-text-centered">
+                  <div class="columns">
+                    <div class="column chatbox"></div>
+                  </div>
+                  <form @submit.prevent="sendChat">
+                    <div class="field has-addons has-text-centered is-flex-centered">
+                      <div class="control">
+                        <input class="input" v-model="chat" type="text" placeholder="Ingresa tu mensaje" />
+                      </div>
+                      <div class="control">
+                        <button type="submit" class="button is-info">
+                          <span class="icon">
+                            <span class="mdi mdi-arrow-up"></span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from 'axios'
+import moment from 'moment'
+import { mapState } from 'vuex'
+import Chess from 'chess.js'
+import Chessboard from '.././assets/js/chessboard'
+import Snackbar from '../components/Snackbar'
+import PlaySound from '../components/PlaySound'
+import swal from 'sweetalert'
+
+export default {
+  name: 'Play',
+  mounted () {
+    window.app = this
+    this.usersJoined = []
+    this.gameLoad()
+  },
+  computed: {
+    ...mapState([
+      'player',
+      'stockfishEvalTime'
+    ])
+  },
+  beforeDestroy () {
+    this.$socket.emit('leave', this.data._id)
+    clearInterval(this.clock)
+  },
+  sockets: {
+    play (data) {
+      this.$router.push(`/play/${data.game}`)
+    },
+    game_updated (data) {
+      if (data.result) {
+        let elo = data.blackelo
+        if (this.playerColor[0] === 'w') {
+          elo = data.whiteelo
+          this.player.elo = data.whiteelo
+          this.opponent.elo = data.blackelo
+        }
+
+        if (elo) {
+          this.$store
+            .dispatch('player', { elo: elo })
+            .then(data => {
+              console.log(`elo updated: ${elo}`)
+            })
+        }
+
+        this.data = data
+        this.showResultGame()
+      }
+    },
+    start (data) {
+      var t = this
+      setTimeout(() => {
+        if (!t.gameStarted && !t.data.result) {
+          t.gameStarted = true
+          t.boardTaps()
+          PlaySound('start.mp3')
+        }
+      }, 400)
+    },
+    joined (data) {
+      if (data.code !== this.player.code && !this.announced_game_over) {
+        Snackbar('success', '👤 ' + data.code + ' se unió a la partida')
+      }
+
+      var exists = false
+      for (var i in this.usersJoined) {
+        if (this.usersJoined[i] === data.code) {
+          exists = true
+        }
+      }
+      if (exists === false) {
+        this.usersJoined.push(data.code)
+      }
+
+      setTimeout(() => {
+        if (this.usersJoined.length === 2 && !this.data.result) {
+          let match = JSON.parse(localStorage.getItem('match'))
+          this.$socket.emit('action', {
+            action: 'start',
+            player: this.player,
+            group: match.group,
+            id: this.$route.params.game
+          })
+        }
+      }, 3000)
+    },
+    gone (data) {
+      if (data.player !== this.player.code) {
+        Snackbar('error', '👤 ' + data.player + ' abandonó la partida')
+      }
+      for (var i in this.usersJoined) {
+        if (this.usersJoined[i] === data.player) {
+          this.usersJoined.splice(i, 1)
+        }
+      }
+    },
+    reject_rematch (data) {
+      if (data.asker.code === this.player.code) {
+        swal.close()
+        swal('Partida declinada', '👤 ' + data.player.code + ' declinó la revancha')
+      }
+    },
+    invite_rematch (data) {
+      var t = this
+      if (data.player.code === this.player.code) {
+        swal.close()
+        swal({
+          title: '¿Aceptás esta partida?',
+          text: '👤 ' + data.asker.code + ' solicita una revancha',
+          buttons: ['Declinar', 'Aceptar'],
+          closeOnClickOutside: false
+        })
+          .then(accept => {
+            if (accept) {
+              t.createNewGame(1)
+            } else {
+              t.$socket.emit('action', { ...data, action: 'reject_rematch' })
+            }
+          })
+      }
+    },
+    move (data) {
+      var t = this
+      if (data.color !== t.playerColor[0]) {
+        var moveObj = ({
+          from: data.from,
+          to: data.to,
+          promotion: 'q' // NOTE: always promote to a queen for example simplicity
+        })
+        // see if the move is legal
+        var move = t.game.move(moveObj)
+
+        if (move === null) {
+          return 'snapback'
+        }
+
+        t.board.position(t.game.fen())
+        t.updateMoves(move)
+      }
+
+      if (!t.clock) {
+        t.startClock()
+      } else {
+        t.timer.w = parseInt(data.wtime)
+        t.timer.b = parseInt(data.btime)
+        t.tdisplay.w = t.$root.getTimeDisplay(t.timer.w)
+        t.tdisplay.b = t.$root.getTimeDisplay(t.timer.b)
+      }
+    },
+    acceptdraw (data) {
+      // swal.close()
+      // swal('Tablas', 'Esta partida finalizó con un empate', 'info')
+      this.announced_game_over = true
+    },
+    rejectdraw (data) {
+      swal.close()
+      if (data.asker === this.player.code) {
+        Snackbar('error', 'Solicitud de Tablas rechazada. El oponente desea continuar jugando')
+        // swal('Tablas rechazado', 'El oponente desea continuar jugando', 'info')
+      }
+    },
+    capitulate (data) {
+      var t = this
+      if (data.asker === t.player.code) {
+        PlaySound('lose.mp3')
+      } else {
+        PlaySound('win.mp3')
+        t.sendResults()
+      }
+      t.announced_game_over = true
+    },
+    askfordraw (data) {
+      var t = this
+      if (data.player === t.player.code) {
+        swal({
+          title: '¿Aceptas tablas?',
+          text: 'Tu oponente ' + t.opponent.code + ' solicita tablas',
+          buttons: ['No', 'Sí'],
+          closeOnClickOutside: false
+        }).then(accept => {
+          if (accept) {
+            t.sendResults('1/2-1/2')
+            t.$socket.emit('action', { ...data, action: 'askfordraw' })
+            t.announced_game_over = true
+            PlaySound('end.mp3')
+          } else {
+            t.$socket.emit('action', { ...data, action: 'rejectdraw' })
+            console.log('Clicked on cancel')
+          }
+        })
+      } else {
+        swal('Esperando respuesta...', 'Has solicitado tablas a ' + t.opponent.code, 'info')
+      }
+    },
+    chat (data) {
+      const chatbox = document.querySelector('.chatbox')
+      const owned = this.player.code === data.sender
+      const cls = owned ? 'is-pulled-right has-text-right' : 'is-pulled-left has-text-left has-background-info has-text-white'
+      chatbox.innerHTML += `<div class="box ${cls}">${data.line}</div>`
+      chatbox.scrollTop = chatbox.scrollHeight
+      if (data.sender !== this.player.code) {
+        PlaySound('chat.mp3')
+      }
+    }
+  },
+  methods: {
+    sendResults (result) {
+      if (!result) {
+        result = '1/2-1/2'
+        if (this.game.in_draw() || this.game.in_stalemate() || this.game.in_threefold_repetition()) {
+          result = '1/2-1/2'
+        } else {
+          result = this.game.turn() === 'b' ? '1-0' : '0-1'
+        }
+      }
+
+      let match = JSON.parse(localStorage.getItem('match'))
+      var white = this.player
+      var black = this.opponent
+      let fullResult = {
+        game: this.$route.params.game,
+        white: white.code,
+        whiteelo: white.elo,
+        whiteflag: white.flag,
+        black: black,
+        blackelo: black.elo,
+        blackflag: black.flag,
+        result: result,
+        fen: this.game.fen(),
+        date: moment().format('YYYY.MM.DD HH:mm'),
+        plys: this.$root.countMoves(this.game.pgn())
+      }
+
+      this.$socket.emit('group_result', {
+        _id: match.group,
+        match: match.match,
+        result: fullResult
+      })
+
+      this.$socket.emit('game', {
+        _id: this.$route.params.game,
+        wtime: this.timer.w,
+        btime: this.timer.b,
+        white: white.code,
+        black: black.code,
+        whiteelo: white.elo,
+        blackelo: black.elo,
+        result: result,
+        match: match.match,
+        group: match.group,
+        chart: this.chart.values,
+        score: this.performance,
+        annotations: this.annotations
+      })
+    },
+    showResultGame () {
+      let data = this.data
+      let winner = null
+      let matchResult = [0.5, 0.5]
+      switch (data.result) {
+        case '1-0':
+          winner = data.white
+          matchResult = data.white > data.black ? [1, 0] : [0, 1]
+          break
+        case '0-1':
+          winner = data.black
+          matchResult = data.white > data.black ? [0, 1] : [1, 0]
+          break
+      }
+
+      let resultText = winner ? `Gana ${winner}` : 'Tablas'
+      let match = JSON.parse(localStorage.getItem('match'))
+      const finalResult = (parseInt(data.game) === parseInt(data.games))
+
+      if (!match.results) {
+        match.results = []
+      }
+
+      match.results.push(matchResult)
+      localStorage.setItem('match', JSON.stringify(match))
+      this.match = match
+
+      if (!finalResult) {
+        const template = (`
+<div>
+  <div class="columns is-mobile">
+    <div class="column">
+      <span class="button is-large result-white">${data.whiteflag} ${data.white}</span>
+    </div>
+    <div class="column">
+      <span class="button is-large result-black">${data.blackflag} ${data.black}</span>
+    </div>
+  </div>
+  <div class="has-text-centered">
+    <div class="pietimer">
+      <div class="spinner pie"></div>
+      <div class="filler pie"></div>
+      <div class="mask"></div>
+      <div class="timer"></div>
+    </div>
+    <p>Siguiente partida en <span id="secondstoproceed"></span></p>
+  </div>
+</div>`)
+        swal({
+          title: resultText,
+          text: `Resultado parcial ${data.game}/${data.games}`,
+          content: {
+            element: 'div',
+            attributes: {
+              innerHTML: `${template}`
+            }
+          },
+          buttons: false,
+          closeOnClickOutside: false
+        })
+
+        let seconds = this.secondsToProceed
+        let interval = setInterval(() => {
+          let s = seconds > 1 ? 's' : ''
+          if (document.getElementById('secondstoproceed')) {
+            document.getElementById('secondstoproceed').innerHTML = `${seconds} segundo${s}`
+          }
+          seconds--
+
+          if (seconds <= -1) {
+            clearInterval(interval)
+          }
+        }, 1000)
+
+        setTimeout(() => {
+          swal.close()
+          if (this.playerColor[0] === 'w') {
+            this.createNewGame(this.data.game + 1)
+          }
+        }, seconds * 1000)
+      } else {
+        const template = (`
+<div>
+  <div class="columns is-mobile">
+    <div class="column">
+      <span class="button is-large ${data.white}">${data.whiteflag} ${data.white}</span>
+    </div>
+    <div class="column">
+      <span class="button is-large ${data.black}">${data.blackflag} ${data.black}</span>
+    </div>
+  </div>
+  <div class="columns is-mobile">
+    <div class="column">
+      <div id="matchscorefinal" class="columns fadeIn"></div>
+    </div>
+  </div>
+</div>`)
+        swal({
+          title: `Resultado final`,
+          content: {
+            element: 'div',
+            attributes: {
+              innerHTML: `${template}`
+            }
+          },
+          closeOnClickOutside: false
+        }).then(accept => {
+          let match = JSON.parse(localStorage.getItem('match'))
+          this.$router.push('/group/' + match.group)
+        })
+        setTimeout(() => {
+          document.getElementById('matchscorefinal').innerHTML = document.getElementById('matchresults').innerHTML
+        }, 1000)
+      }
+
+      /* setTimeout(() => {
+        let winColor = data.result === '1-0' ? 'white' : 'black'
+        let winnerDiv = document.querySelector(`.result-${winColor}`)
+        if (finalResult) {
+          let player1 = data.white > data.black ? data.white : data.black
+          let player2 = data.white > data.black ? data.black : data.white
+          let score1 = 0
+          let score2 = 0
+          match.results.map(e => {
+            score1 += e[0]
+            score2 += e[1]
+          })
+          if (score1 > score2) {
+            winnerDiv = document.querySelector(`.${player1}`)
+          } else if (score1 < score2) {
+            winnerDiv = document.querySelector(`.${player2}`)
+          } else {
+            winnerDiv = null
+          }
+        }
+        if (data.result !== '1/2-1/2') {
+          if (winnerDiv) {
+            winnerDiv.classList.add('is-success', 'is-outlined')
+            let confettis = ''
+            for (var i = 0; i < 10; i++) {
+              confettis += '<div class="confetti"></div>'
+            }
+            winnerDiv.innerHTML += `<div class="confetti-container">${confettis}</div>`
+            winnerDiv.innerHTML += '<div class="winnercup"><span class="icon"><span class="mdi mdi-trophy is-size-3"></span></span></div>'
+          }
+        }
+      }, 100) */
+    },
+    createNewGame (game) {
+      let t = this
+      var white = this.opponent
+      var black = this.player
+      axios.post('/game/create', {
+        white: white.code,
+        black: black.code,
+        whiteelo: white.elo,
+        blackelo: black.elo,
+        whiteflag: white.flag,
+        blackflag: black.flag,
+        minutes: t.data.minutes,
+        games: t.data.games,
+        game: game,
+        compensation: t.data.compensation,
+        broadcast: true
+      }).then((res) => {
+        if (res.data.status === 'success') {
+          t.$socket.emit('play', {
+            id: t.data._id,
+            game: res.data.data._id
+          })
+        } else {
+          Snackbar('error', 'El juego no pudo ser creado.')
+        }
+      })
+    },
+    sendChat () {
+      if (this.chat.trim() === '') this.chat = '👋'
+      this.$socket.emit('action', {
+        action: 'chat',
+        id: this.$route.params.game,
+        sender: this.player.code,
+        line: this.chat
+      })
+      this.chat = ''
+    },
+    uciCmd (cmd, which) {
+      // console.log("UCI: " + cmd);
+      (which || this.evaler).postMessage(cmd)
+    },
+    moveList () {
+      var moves = ''
+      var history = this.game.history({ verbose: true })
+
+      for (var i = 0; i < history.length; ++i) {
+        var move = history[i]
+        moves += ' ' + move.from + move.to + (move.promotion ? move.promotion : '')
+      }
+
+      return moves
+    },
+    gameCapitulate () {
+      PlaySound('lose.mp3')
+      swal({
+        title: 'Abandonar partida',
+        text: '¿Querés abandonar esta partida?',
+        buttons: ['No', 'Sí'],
+        closeOnClickOutside: false
+      })
+        .then(accept => {
+          if (accept) {
+            this.$socket.emit('action', {
+              action: 'capitulate',
+              asker: this.player.code,
+              player: this.opponent.code,
+              id: this.$route.params.game
+            })
+          } else {
+            console.log('Clicked on cancel')
+          }
+        })
+    },
+    gameAskForDraw () {
+      PlaySound('chat.mp3')
+      swal({
+        title: '¿Querés solicitar tablas?',
+        text: '',
+        buttons: ['No', 'Sí'],
+        closeOnClickOutside: false
+      })
+        .then(accept => {
+          if (accept) {
+            this.$socket.emit('action', {
+              action: 'askfordraw',
+              asker: this.player.code,
+              player: this.opponent.code,
+              id: this.$route.params.game
+            })
+          } else {
+            console.log('Clicked on cancel')
+          }
+        })
+    },
+    gameStart () {
+      var t = this
+      var pos = 'start'
+      const pref = JSON.parse(localStorage.getItem('player')) || {}
+
+      if (!document.getElementById('board')) {
+        return
+      }
+
+      setTimeout(() => {
+        t.game = new Chess()
+
+        if (t.data.fen) {
+          pos = t.data.fen
+        }
+
+        var cfg = {
+          draggable: true,
+          position: pos,
+          moveSpeed: this.player.moveSpeed || 500,
+          pieceTheme: '/img/chesspieces/wikipedia/{piece}.png'
+        }
+
+        if (!t.data.result) {
+          cfg.onDragStart = t.onDragStart
+          cfg.onDrop = t.onDrop
+          cfg.onSnapEnd = t.onSnapEnd
+        }
+
+        if (pref.pieces) {
+          cfg.pieceTheme = '/img/chesspieces/' + pref.pieces + '/{piece}.png'
+          cfg.moveSpeed = this.player.moveSpeed
+          t.boardColor = pref.board
+        }
+
+        if (window.innerWidth < 789) {
+          cfg.draggable = false
+        }
+
+        if (t.data.pgn) {
+          t.game.load_pgn(t.data.pgn)
+        }
+
+        t.boardEl = document.getElementById('board')
+        // t.$root.toggleFullscreen()
+        t.board = Chessboard('board', cfg)
+        t.board.orientation(t.playerColor)
+
+        window.onresize = function (event) {
+          t.board.resize()
+          t.highlightLastMove()
+          // t.$root.toggleFullscreen()
+          t.boardTaps()
+        }
+
+        if (t.data.result) {
+          t.announced_game_over = true
+          Snackbar('success', 'Reviví esta partida')
+          t.$router.push('/game/' + t.data._id)
+        }
+
+        if (t.data.pgn) {
+          t.pgnIndex = this.gamePGNIndex(t.data.pgn)
+          t.highlightLastMove()
+        }
+      }, 500)
+    },
+    gamePos (pos) {
+      if (pos > this.gameMoves.length - 1 || pos < 0 || !this.announced_game_over) {
+        return
+      }
+
+      this.index = pos
+      const moves = this.gameMoves.slice(0, this.index)
+      var move = this.gameMoves[this.index].san
+      if (!this.game.game_over()) {
+        this.vscore = this.gameMoves[this.index].vscore
+      }
+
+      // ---------------
+      var pgn = []
+      moves.forEach((move, i) => {
+        if (i % 2) {
+          pgn.push(move.san)
+        } else {
+          pgn.push([Math.ceil(i / 2) + 1, move.san].join('. '))
+        }
+      })
+
+      const pgns = pgn.join(' ')
+      this.game.reset()
+      this.game.load_pgn(pgns)
+
+      const moved = this.game.move(move)
+      this.board.position(this.game.fen())
+      this.updateMoveList()
+      this.drawChartPosition()
+
+      setTimeout(() => {
+        this.moveSound(moved)
+        this.addHightlight(moved)
+      }, 250)
+    },
+    drawChartPosition (draw) {
+      if (draw === undefined) draw = true
+      if (!draw) {
+        document.querySelector('.chart-indicator').style.backgroundColor = 'transparent'
+      } else {
+        document.querySelector('.chart-indicator').style.left = ((this.index + 1) / this.gameMoves.length * 100) + '%'
+        document.querySelector('.chart-indicator').style.backgroundColor = 'rgb(0,0,0,0.15)'
+      }
+    },
+    gameLoad () {
+      /* global STOCKFISH */
+      var t = this
+      axios.post('/game', {
+        id: this.$route.params.game
+      }).then((res) => {
+        var match = JSON.parse(localStorage.getItem('match'))
+        var game = res.data
+        var secs = game.minutes * 60
+        // var pgn = game.pgn || ''
+
+        t.match = match
+        t.data = game
+
+        if (game.white === t.player.code) {
+          t.playerColor = 'white'
+          t.opponent.code = game.black
+          t.opponent.elo = game.blackelo
+          t.opponent.flag = game.blackflag
+        } else if (game.black === t.player.code) {
+          t.playerColor = 'black'
+          t.opponent.code = game.white
+          t.opponent.elo = game.whiteelo
+          t.opponent.flag = game.whiteflag
+        }
+
+        if (game.wtime) {
+          t.timer.w = parseInt(game.wtime)
+        } else {
+          t.timer.w = parseInt(game.minutes * 60)
+        }
+
+        t.tdisplay.w = t.$root.getTimeDisplay(t.timer.w)
+
+        if (game.btime) {
+          t.timer.b = parseInt(game.btime)
+        } else {
+          t.timer.b = parseInt(game.minutes * 60)
+        }
+
+        let gameObject = {
+          _id: t.data._id,
+          group: match.group,
+          white: t.data.white,
+          black: t.data.black,
+          wtime: secs,
+          btime: secs
+        }
+
+        t.tdisplay.b = t.$root.getTimeDisplay(t.timer.b)
+        t.gameStart()
+        t.$socket.emit('join', {
+          game: gameObject,
+          player: t.player
+        })
+
+        t.$root.loading = false
+        t.evaler = typeof STOCKFISH === 'function' ? STOCKFISH() : new Worker('/js/stockfish.js')
+
+        t.evaler.onmessage = function (event) {
+          // var t = window.app
+          var line
+
+          if (event && typeof event === 'object') {
+            line = event.data
+          } else {
+            line = event
+          }
+
+          if (line === 'uciok') {
+            t.engineStatus.engineLoaded = true
+          } else if (line === 'readyok') {
+            t.engineStatus.engineReady = true
+          } else {
+            // console.log("evaler: " + line);
+            // var reBestmove = line.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)
+            // var reDepth = line.match(/^info .*\bdepth (\d+) .*\bnps (\d+)/)
+            /// Did the AI move?
+            var reScore = line.match(/^info .*\bscore (\w+) (-?\d+)/)
+            var reBound = line.match(/\b(upper|lower)bound\b/)
+            var obj = { max: 1000, min: -1000, value: 0 }
+            obj.m = (100 - 0) / (obj.min - obj.max)
+            if (reScore) {
+              var score = parseFloat(reScore[2]) * (t.game.turn() === 'w' ? 1 : -1)
+              /// Is it measuring in centipawns?
+              if (reScore[1] === 'cp') {
+                t.score = (score / 100.0).toFixed(2)
+                t.engineStatus.score = score
+                /// Did it find a mate?
+              } else if (reScore[1] === 'mate') {
+                const abs = Math.abs(score) - 1
+                t.engineStatus.score = abs > 0 ? 'Mate en ' + abs : 'Mate'
+              }
+
+              /// Is the score bounded?
+              if (reBound) {
+                t.engineStatus.score = ((reBound[1] === 'upper') === (t.game.turn() === 'w') ? '<= ' : '>= ') + t.engineStatus.score
+              }
+              if (!t.hintMode) {
+                t.vscore = ((obj.m * Math.max(Math.min(t.engineStatus.score, obj.max), obj.min)) + 50)
+              }
+            }
+          }
+        }
+      })
+    },
+    getTimeDisplay (time) {
+      var min = parseInt(time / 60, 10)
+      var sec = parseInt(time % 60, 10)
+
+      min = min < 10 ? '0' + min : min
+      sec = sec < 10 ? '0' + sec : sec
+
+      return min + ':' + sec
+    },
+    startClock () {
+      var t = this
+      t.clock = setInterval(() => {
+        if (t.announced_game_over) {
+          clearInterval(t.clock)
+        } else {
+          var turn = t.game.turn()
+          if (--t.timer[turn] < 0) {
+            t.timer[turn] = 0
+            const result = this.game.turn() === 'b' ? '1-0' : '0-1'
+            if (turn === t.playerColor[0]) {
+              PlaySound('lose.mp3')
+            } else {
+              PlaySound('win.mp3')
+              t.sendResults(result)
+            }
+            t.announced_game_over = true
+          } else {
+            t.tdisplay[turn] = t.$root.getTimeDisplay(t.timer[turn])
+          }
+        }
+      }, 1000)
+    },
+    inviteRematch () {
+      this.$socket.emit('invite_rematch', {
+        asker: this.player,
+        player: this.opponent
+      })
+    },
+    boardTaps () {
+      if (!document.querySelector('.chessboard-63f37')) {
+        return
+      }
+      var t = this
+      const events = ['click', 'mousedown']
+      events.forEach((event) => {
+        document.querySelector('.chessboard-63f37').addEventListener(event, e => {
+          e.preventDefault()
+          const turn = t.game.turn() === t.playerColor[0]
+          const piece = e.target.getAttribute('data-piece')
+
+          if (!turn) return
+          if (e.target.classList.contains('row-5277c') || e.target.classList.contains('board-b72b1')) return
+
+          const src = e.target.getAttribute('src')
+          const target = src ? e.target.parentNode : e.target
+          const square = target.id.substring(0, 2)
+
+          if (!t.moveFrom) {
+            if (piece && piece[0] !== t.playerColor[0]) return
+            target.classList.add('highlight-move')
+            if (!src) { // blank square
+              t.removeHighlight()
+              return
+            }
+
+            t.moveFrom = square
+          } else {
+            if (square === t.moveFrom) return
+            var moveObj = ({
+              from: t.moveFrom,
+              to: square,
+              promotion: 'q' // NOTE: always promote to a queen for example simplicity
+            })
+
+            t.moveFrom = null
+            var move = t.game.move(moveObj)
+
+            // illegal move
+            if (move === null) {
+              t.removeHighlight()
+              t.moveFrom = square
+              if (src) {
+                target.classList.add('highlight-move')
+              }
+              return 'snapback'
+            }
+
+            t.board.position(t.game.fen())
+            t.updateMoves(move)
+            t.emitMove(move)
+          }
+        })
+      })
+    },
+    onDragStart  (source, piece, position, orientation) {
+      var t = this
+      if (t.game.game_over() === true ||
+            (t.game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+            (t.game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+        return false
+      }
+    },
+    onDrop  (source, target) {
+      var t = this
+      if (!t.gameStarted || t.announced_game_over) return 'snapback'
+      // move object
+      var moveObj = ({
+        from: source,
+        to: target,
+        promotion: 'q' // NOTE: always promote to a queen for example simplicity
+      })
+
+      // see if the move is legal
+      var move = t.game.move(moveObj)
+
+      // illegal move
+      if (move === null) {
+        return 'snapback'
+      }
+
+      t.moveFrom = null
+      t.updateMoves(move)
+      t.emitMove(move)
+    },
+    emitMove (move) {
+      move.id = this.$route.params.game
+      move.eco = this.eco
+      move.opening = this.opening
+      move.vscore = this.vscore
+      move.fen = this.game.fen()
+      move.pgn = this.game.pgn()
+      move.turn = this.game.turn()
+      move.wtime = parseInt(this.timer.w)
+      move.btime = parseInt(this.timer.b)
+      move.compensation = this.data.compensation
+      this.$socket.emit('move', move)
+    },
+    onSnapEnd () {
+      setTimeout(() => {
+        this.board.position(this.game.fen())
+      }, 100)
+    },
+    updateMoves (move) {
+      var t = this
+      setTimeout(() => {
+        this.uciCmd('position startpos moves' + this.moveList(), this.evaler)
+        this.uciCmd('eval', this.evaler)
+        this.uciCmd('go depth 5')
+        if (t.game.game_over()) {
+          if (t.playerColor[0] === 'w') {
+            t.sendResults()
+          }
+          t.announced_game_over = true
+        }
+
+        t.pgnIndex = this.gamePGNIndex(t.game.pgn())
+        t.index++
+        t.gameMoves = t.gameMoves.slice(0, t.index)
+
+        setTimeout(() => {
+          const index = t.index
+          t.gameMoves.push({
+            san: move.san,
+            vscore: t.vscore
+          })
+          t.addHightlight(move)
+          t.moveSound(move)
+          t.updateMoveList()
+          setTimeout(() => {
+            t.drawChart(index)
+          }, t.stockfishEvalTime)
+        }, 250)
+      }, 100)
+
+      t.findEco(t.game.pgn())
+    },
+    findEco (pgn) {
+      let t = this
+      let ecoFound = false
+      axios.post('/eco/pgn', { pgn: pgn }).then((res) => {
+        if (res.data.eco) {
+          ecoFound = true
+          t.opening = t.$root.t(res.data.eco)
+          t.eco = res.data.eco
+        }
+        t.ecoFound = ecoFound
+      })
+    },
+    updateMoveList () {
+      const movesTable = document.querySelector('.movesTableContainer')
+      const current = document.querySelector('.moveindex.m' + this.index)
+      if (current.parentNode.offsetTop + current.parentNode.clientHeight > movesTable.clientHeight) {
+        movesTable.scrollTop = current.parentNode.offsetTop
+      } else {
+        movesTable.scrollTop = 0
+      }
+      document.querySelectorAll('.moveindex').forEach((item) => {
+        item.parentNode.classList.remove('active')
+      })
+      document.querySelector('.moveindex.m' + this.index).parentNode.classList.add('active')
+    },
+    calcPoints  () {
+      this.chart.points = []
+      this.chart.values = this.chart.values.filter(e => e)
+      if (this.chart.values.length > 1) {
+        var points = '0,' + this.chart.height + ' '
+        for (var x = 0; x < this.chart.values.length; x++) {
+          var perc = this.chart.values[x] / this.chart.maxValue
+          var steps = 100 / (this.chart.values.length - 1)
+          var point = (steps * (x)).toFixed(2) + ',' + (this.chart.height - (this.chart.height * perc)).toFixed(2) + ' '
+          points += point
+        }
+        points += '100,' + this.chart.height
+        this.chart.points = points
+      }
+    },
+    drawChart (index) {
+      if (!this.game.game_over()) {
+        var score = this.vscore
+
+        if (this.playerColor === 'white') {
+          score = 100 - score
+        }
+
+        if (score < 0) {
+          score = 0
+        }
+
+        if (score > 100) {
+          score = 100
+        }
+
+        if (!isNaN(score)) {
+          this.drawChartPosition(false)
+          this.chart.values = this.chart.values.slice(0, index)
+          this.chart.values[index] = score
+          this.performance = this.performance.slice(0, index)
+          this.performance[index] = this.score
+          this.makeAnnotation(index)
+          this.updateChart()
+        }
+      }
+    },
+    makeAnnotation (index) {
+      /*
+        $1 good !
+        $2 poor ?
+        $3 very good !!
+        $4 very poor ??
+        $5 speculative !?
+        $6 questionable ?!
+        $14 White has a slight advantage
+        $15 Black has a slight advantage
+        $12 book
+      */
+      var annotation = false
+      if (this.ecoFound) {
+        annotation = 12
+      } else if (this.performance[index - 1]) {
+        const abs = parseFloat(this.performance[index]) - parseFloat(this.performance[index - 1])
+        const delta = Math.abs(abs)
+        if (delta > 2) {
+          annotation = abs > 0 ? (this.game.turn() === 'b' ? 3 : 4) : (this.game.turn() === 'b' ? 4 : 3)
+        } else if (delta > 1) {
+          annotation = abs > 0 ? (this.game.turn() === 'b' ? 1 : 2) : (this.game.turn() === 'b' ? 2 : 1)
+        } else if (delta > 0.5) {
+          annotation = abs > 0 ? (this.game.turn() === 'b' ? 15 : 14) : (this.game.turn() === 'b' ? 14 : 15)
+        }
+      }
+      if (annotation) {
+        this.annotations[index] = `$` + annotation
+      }
+    },
+    updateChart () {
+      this.calcPoints()
+
+      var element = document.getElementsByClassName('chart')[0]
+      if (!element) {
+        return
+      }
+      element.innerHTML = ''
+
+      var width = document.querySelector('.movesTableContainer').clientWidth + 'px'
+      var chart = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+      chart.setAttribute('width', '100%')
+      chart.setAttribute('height', '100%')
+      chart.setAttribute('preserveAspectRatio', 'none')
+      chart.setAttribute('viewBox', '0 0 ' + this.chart.width + ' ' + this.chart.height)
+
+      var polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon')
+      polygon.setAttribute('points', this.chart.points)
+
+      if (this.chart.values.length > 1) {
+        element.style.width = width
+        element.appendChild(chart)
+        chart.appendChild(polygon)
+      }
+    },
+    moveSound (move) {
+      var sound = 'move.mp3'
+      let t = this
+      if (t.game.game_over()) {
+        if (t.game.in_draw() || t.game.in_stalemate() || t.game.in_threefold_repetition()) {
+          sound = 'end.mp3'
+        } else if (t.game.turn() === t.playerColor[0]) {
+          sound = 'lose.mp3'
+        } else {
+          sound = 'win.mp3'
+        }
+      } else {
+        if (move.flags === 'c') {
+          sound = 'capture.mp3'
+        }
+
+        if (move.flags === 'k') {
+          sound = 'castle.mp3'
+        }
+
+        if (move.flags === 'q') {
+          sound = 'castle.mp3'
+        }
+
+        if (this.game.in_check() === true) {
+          sound = 'check.mp3'
+        }
+      }
+      PlaySound(sound)
+    },
+    removeHighlight  () {
+      if (document.getElementById('board')) {
+        document.getElementById('board').querySelectorAll('.square-55d63').forEach((item) => {
+          item.classList.remove('highlight-move')
+          item.classList.remove('in-check')
+        })
+      }
+    },
+    addHightlight  (move) {
+      var t = this
+      t.removeHighlight()
+
+      if (move) {
+        if (t.game.in_check() === true) {
+          setTimeout(() => {
+            if (document.getElementById('board')) {
+              document.getElementById('board').querySelector('img[data-piece="' + t.game.turn() + 'K"]').parentNode.classList.add('in-check')
+            }
+          }, 200)
+        }
+        if (document.getElementById('board')) {
+          document.getElementById('board').querySelector('.square-' + move.from).classList.add('highlight-move')
+          document.getElementById('board').querySelector('.square-' + move.to).classList.add('highlight-move')
+        }
+      }
+    },
+    highlightLastMove () {
+      var history = this.game.history({ verbose: true })
+      if (history.length) {
+        var move = history[history.length - 1]
+        this.addHightlight(move)
+      }
+    },
+    showLiveURL () {
+      var url = `${window.location.protocol}//${window.location.host}/watch/${this.$route.params.game}`
+      const template = (`
+<div class="content">
+  <div class="columns columns-bottom is-flex has-text-centered">
+    <div class="column">
+      <div class="control">
+        <div class="field">
+          <textarea class="textarea" readonly>${url}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`)
+      swal({
+        title: 'URL partida en vivo',
+        content: {
+          element: 'div',
+          attributes: {
+            innerHTML: `${template}`
+          }
+        }
+      })
+    },
+    showPGN () {
+      var pgn = this.game.pgn() + ' ' + (this.data.result ? this.data.result : '')
+      const template = (`
+<div class="content">
+  <div class="columns columns-bottom is-flex has-text-centered">
+    <div class="column">
+      <div class="control">
+        <div class="field">
+          <textarea class="textarea" readonly>${pgn}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`)
+      swal({
+        title: 'Copiar PGN',
+        content: {
+          element: 'div',
+          attributes: {
+            innerHTML: `${template}`
+          }
+        }
+      })
+    },
+    gamePGNIndex (pgn) {
+      var data = []
+      pgn.split('.').forEach(function (turn, i) {
+        const white = turn.split(' ')[1] || ''
+        const black = turn.split(' ')[2] || ''
+        if (isNaN(white)) {
+          data.push({
+            white: white,
+            black: black,
+            i: Math.ceil(i * 2),
+            odd: i % 2 === 0
+          })
+        }
+      })
+      return data
+    }
+  },
+  data () {
+    return {
+      chart: {
+        width: 100,
+        height: 50,
+        maxValue: 100,
+        values: [51],
+        points: []
+      },
+      secondsToProceed: 10,
+      data: {},
+      engineStatus: {},
+      tab: 'pgn',
+      chat: '',
+      index: -1,
+      currentGame: 0,
+      gameMoves: [],
+      match: {},
+      clock: null,
+      timer: { w: null, b: null },
+      tdisplay: { w: null, b: null },
+      opening: null,
+      score: 0.10,
+      performance: [],
+      vscore: 49,
+      orientation: null,
+      announced_game_over: false,
+      eco: null,
+      board: null,
+      boardEl: null,
+      boardColor: 'classic',
+      game: null,
+      gameStarted: false,
+      usersJoined: [],
+      pgnIndex: [],
+      annotations: [],
+      ecoFound: false,
+      moveFrom: null,
+      playerColor: null,
+      opponent: {}
+    }
+  }
+}
+</script>

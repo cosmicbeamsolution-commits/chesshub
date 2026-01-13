@@ -1,0 +1,21 @@
+<template>
+  <div class="container is-widescreen">
+    <section class="content column fadeIn">
+      <h3 class="title gap-1">
+        <span class="icon">
+          <span class="mdi mdi-hands"></span>
+        </span>
+        <span>Donate</span>
+      </h3>
+      <p>Si estas interesado en impulsar el desarrollo y mantenimiento de este proyecto podés donar voluntariamente. Cualquier suma por pequeña que parezca ayuda a continuar con el proyecto. Desde ya, muchas gracias.</p>
+      <p>Los autores de Biltz</p>
+      <p><a href="https://www.paypal.me/overlemon" target="_blank" class="button is-success">Efectuar donación a Biltz</a></p>
+    </section>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Validate'
+}
+</script>

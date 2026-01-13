@@ -1,0 +1,46 @@
+          <!--div v-show="!players.length">
+            <div class="columns is-gapless is-mobile is-vcentered has-text-centered">
+              <div class="column is-hidden-tablet">
+                <a :href="'whatsapp://send?text=¿Querés jugar ajedrez online? Estoy como ' + player.code + ' https://biltz.herokuapp.com/lobby'" target="_blank">
+                  <span class="icon has-text-whatsapp is-size-3">
+                    <span class="fab fa-whatsapp"></span>
+                  </span>
+                </a>
+              </div>
+              <div class="column is-hidden-mobile">
+                <a :href="'https://web.whatsapp.com/send?text=¿Querés jugar ajedrez online? Estoy como ' + player.code + ' https://biltz.herokuapp.com/lobby'" target="_blank">
+                  <span class="icon has-text-whatsapp is-size-3">
+                    <span class="fab fa-whatsapp"></span>
+                  </span>
+                </a>
+              </div>
+              <div class="column">
+                <a :href="'http://www.facebook.com/sharer.php?u=https://biltz.herokuapp.com/lobby&quote=¿Querés jugar ajedrez online? Estoy como ' + player.code + ' #chess'" target="_blank">
+                  <span class="icon has-text-facebook is-size-3">
+                    <span class="fab fa-facebook"></span>
+                  </span>
+                </a>
+              </div>
+              <div class="column">
+                <a :href="'https://twitter.com/share?url=https://biltz.herokuapp.com/lobby&amp;text=¿Querés jugar ajedrez online? Estoy como ' + player.code + ' #chess'" target="_blank">
+                  <span class="icon has-text-twitter is-size-3">
+                    <span class="fab fa-twitter"></span>
+                  </span>
+                </a>
+              </div>
+              <div class="column">
+                <a :href="'http://www.linkedin.com/shareArticle?mini=true&url=https://biltz.herokuapp.com/lobby&text=¿Querés jugar ajedrez online? Estoy como ' + player.code + ' #chess'" target="_blank">
+                  <span class="icon has-text-twitter is-size-3">
+                    <span class="fab fa-linkedin"></span>
+                  </span>
+                </a>
+              </div>
+              <div class="column">
+                <a :href="'mailto:?Body=Estoy como ' + player.code + ' https://biltz.herokuapp.com/lobby&Subject=¿Querés jugar ajedrez online?'" target="_blank">
+                  <span class="icon has-text-primary is-size-3">
+                    <span class="mdi mdi-envelope-square"></span>
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div-->
