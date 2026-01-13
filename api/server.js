@@ -20,6 +20,8 @@ var allowedOrigins = [
   'http://localhost:8080',
   'http://192.168.2.105:8080',
   'http://192.168.2.105:4000',
+  'https://chesshub.overlemon.com',
+  'https://chesshub-api.overlemon.com'
   //'https://flitz.herokuapp.com',
   //'https://flitzapi.herokuapp.com'
 ]
