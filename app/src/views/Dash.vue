@@ -92,7 +92,7 @@
 import axios from 'axios'
 import Snackbar from '../components/Snackbar'
 export default {
-  name: 'results',
+  name: 'Dash',
   watch: {
     '$route': function () {
       this.triggerSearch()
@@ -106,7 +106,7 @@ export default {
     inputTrigger: function () {
       if (this.interval) clearInterval(this.interval)
       this.interval = setTimeout(() => {
-        this.$router.push({ path: 'results', query: { q: this.query } })
+        this.$router.push({ path: 'search', query: { q: this.query } })
       }, 1500)
     },
     clear: function () {
@@ -123,8 +123,8 @@ export default {
     search: function () {
       this.$root.loading = true
       this.searching = this.$route.query.length || false
-      axios.post('/dash/games', {
-        code: this.player.code,
+      axios.post('/search', {
+        code: this.player ? this.player.code : 'unknown',
         query: this.query,
         offset: this.offset,
         limit: this.limit,
@@ -160,7 +160,7 @@ export default {
       })
     },
     submit: function () {
-      this.$router.push('/results?q=' + this.query.trim())
+      this.$router.push('/search?q=' + this.query.trim())
     }
   },
   data () {

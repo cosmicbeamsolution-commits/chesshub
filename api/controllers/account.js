@@ -16,6 +16,7 @@ module.exports = {
     req.app.db.collection('accounts').findOne({
       email: email
     },function(err, user) {
+      console.log('APP_SECRET',process.env.APP_SECRET)
       if (err) return res.status(500).send('Error on the server.')
       if (!user || !user.password) return res.status(404).send(`No user found with email ${email}`)
       let passwordIsValid = bcrypt.compareSync(req.body.password, user.password)

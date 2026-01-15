@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "API for web socket-based chess applications",
   "scripts": {
-    "start": "MONGO_URL=mongodb://localhost:27017/flitz nodemon server.js"
+    "start": "MONGO_URL=mongodb://localhost:27017/flitz APP_SECRET=abcdefghijklmnstuvwxyz123456789 nodemon server.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

@@ -4,9 +4,10 @@ import store from './store'
 import axios from 'axios'
 import $ from 'jquery'
 import Landing from '@/views/Landing'
-import Results from '@/views/Results'
+import Search from '@/views/Search'
 import Play from '@/views/Play'
 import Live from '@/views/Live'
+import Dash from '@/views/Dash'
 import Settings from '@/views/Settings'
 import Stockfish from '@/views/Stockfish'
 import Exhibit from '@/views/Exhibit'
@@ -37,10 +38,11 @@ const router = new Router({
   mode: 'history',
   routes: [
     { path: '/', name: 'Landing', component: Landing },
-    { path: '/results', name: 'Results', component: Results },
+    { path: '/search', name: 'Search', component: Search },
     { path: '/openings', name: 'Openings', component: Openings },
     { path: '/opening/:name', name: 'Opening', component: Opening },
     { path: '/live', name: 'Live', component: Live },
+    { path: '/dash', name: 'Dash', component: Dash },
     { path: '/game/:game', name: 'Game', component: Game },
     { path: '/play/:game', name: 'Play', component: Play },
     { path: '/watch/:game', name: 'Watch', component: Watch },

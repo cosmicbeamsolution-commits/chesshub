@@ -40,7 +40,7 @@
           </div>
           <div>
             <div v-for="(item, index) in players" :key="index">
-              <router-link :to="`/results?q=${item.code}&strict=1`" :title="item.code">
+              <router-link :to="`/search?q=${item.code}&strict=1`" :title="item.code">
                 <span class="mini-button has-background-light" :class="{ 'opacity25': item.code === player.code }">
                   <span class="icon">
                     <span v-html="item.flag"></span>

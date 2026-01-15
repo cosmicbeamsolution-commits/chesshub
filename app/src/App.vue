@@ -172,8 +172,8 @@ export default {
         to: 'live',
         mdi: 'mdi-fire'
       }, {
-        to: 'results',
-        mdi: 'mdi-view-list'
+        to: 'search',
+        mdi: 'mdi-book-search'
       }, {
         to: 'openings',
         mdi: 'mdi-book'

@@ -3,9 +3,9 @@
     <div class="content column fadeIn">
       <h3>
         <span class="icon has-margin">
-          <span class="mdi mdi-view-list"></span>
+          <span class="mdi mdi-book-search"></span>
         </span>
-        <span>{{ 'results' | t }}</span>
+        <span>{{ 'search' | t }}</span>
       </h3>
       <form @submit.prevent="submit">
         <div class="field has-addons">
@@ -45,7 +45,7 @@ import Snackbar from '../components/Snackbar'
 import TablePager from '@/components/TablePager'
 import GameList from '@/components/GameList'
 export default {
-  name: 'Results',
+  name: 'Search',
   watch: {
     '$route': function () {
       this.triggerSearch()
@@ -63,7 +63,7 @@ export default {
     inputTrigger: function () {
       if (this.interval) clearInterval(this.interval)
       this.interval = setTimeout(() => {
-        this.$router.push({ path: 'results', query: { q: this.pager.query } })
+        this.$router.push({ path: 'search', query: { q: this.pager.query } })
       }, 1500)
     },
     clear: function () {
@@ -112,7 +112,7 @@ export default {
       })
     },
     submit: function () {
-      this.$router.push('/results?q=' + this.pager.query.trim()).catch(() => {})
+      this.$router.push('/search?q=' + this.pager.query.trim()).catch(() => {})
     }
   },
   data () {
@@ -128,7 +128,7 @@ export default {
         offset: 0
       },
       searching: false,
-      msg: 'Results'
+      msg: 'Search'
     }
   }
 }
