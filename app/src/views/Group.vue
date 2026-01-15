@@ -45,12 +45,12 @@
                   <span class="icon">
                     <span v-html="item.flag"></span>
                   </span>
-                  <span class="has-text-grey" v-html="item.code"></span>
+                  <span v-html="item.code"></span>
                   <!--span class="has-text-primary" v-html="item.elo"></span-->
                   <span v-if="item.plying" class="icon is-size-6 has-margin has-text-success">
                     <span class="mdi mdi-chess-king"></span>
                   </span>
-                  <span v-if="item.observe" class="icon is-size-6 has-margin has-text-grey">
+                  <span v-if="item.observe" class="icon is-size-6 has-margin">
                     <span class="mdi mdi-eye"></span>
                   </span>
                 </span>
@@ -61,18 +61,18 @@
         <div class="column">
           <div class="tabs is-marginless">
             <ul>
-              <li :class="{ 'is-active' : tab === 'results' }">
-                <a @click="setTab('results')" :title="'results' | t" class="gap-11">
-                  <span class="icon is-marginless">
-                    <i class="mdi mdi-view-list is-size-4" aria-hidden="true"></i>
-                  </span> {{ 'results' | t }}
-                </a>
-              </li>
               <li :class="{ 'is-active' : tab === 'chat' }">
                 <a @click="setTab('chat')" title="Chat" class="gap-11">
                   <span class="icon is-marginless">
                     <i class="mdi mdi-comment-text-outline is-size-4" aria-hidden="true"></i>
                   </span> {{ 'chat' | t }}
+                </a>
+              </li>
+              <li :class="{ 'is-active' : tab === 'results' }">
+                <a @click="setTab('results')" :title="'results' | t" class="gap-11">
+                  <span class="icon is-marginless">
+                    <i class="mdi mdi-view-list is-size-4" aria-hidden="true"></i>
+                  </span> {{ 'results' | t }}
                 </a>
               </li>
               <li v-show="games.length" :class="{ 'is-active' : tab === 'playing' }">
@@ -137,11 +137,21 @@
                 <div class="column chatbox-container">
                   <div class="chatbox fadeIn">
                     <div v-for="(line, index) in chatLines" :key="index" class="chatline">
-                      <div class="chatbubble" :class="{ 'is-pulled-right has-text-right has-background-info' : line.owned, 'is-pulled-left has-text-left has-background-white' : !line.owned, 'has-background-light' : line.sender === 'bot' }">
-                        <strong v-show="line.sender !== 'bot' && !line.owned">{{ line.sender }} </strong>
-                        <span :class="{ 'has-text-grey' : line.sender === 'bot', 'has-text-white': line.owned }" v-html="line.text"></span>
+                      <div class="chatbubble" :class="{
+                        'is-pulled-right has-text-right has-background-info is-own' : line.owned && line.sender != 'bot',
+                        'is-pulled-left has-text-left has-background-white is-not-own' : !line.owned && line.sender != 'bot',
+                        'is-bot' : line.sender === 'bot'
+                      }">
+                        <div class="is-flex-centered gap-1">
+                          <span v-show="line.sender !== 'bot' && !line.owned">
+                            <b>{{ line.sender }}</b>
+                          </span>
+                          <span>
+                            <p v-html="line.text"/>
+                          </span>
+                        </div>
+                        <div v-html="line.ts" class="ts is-size-7"></div>
                       </div>
-                      <div v-show="line.sender != 'bot'" v-html="line.ts" class="ts is-size-7" :class="{  'is-pulled-right has-text-right' : line.owned, 'is-pulled-left has-text-left' : !line.owned, 'has-text-grey': line.sender !== 'bot', 'has-text-white': line.sender === 'bot' }"></div>
                     </div>
                   </div>
                 </div>
@@ -205,7 +215,7 @@ export default {
       showResultsAll: false,
       groupKey: 0,
       chat: '',
-      tab: 'results',
+      tab: 'chat',
       tried: false,
       games: [],
       boards: [],
