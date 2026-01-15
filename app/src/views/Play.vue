@@ -609,7 +609,12 @@ export default {
           closeOnClickOutside: false
         }).then(accept => {
           let match = JSON.parse(localStorage.getItem('match'))
-          this.$router.push('/group/' + match.group)
+          this.$router.push({
+            name: 'Group',
+            params: {
+              id: match.group
+            }
+          })
         })
         setTimeout(() => {
           document.getElementById('matchscorefinal').innerHTML = document.getElementById('matchresults').innerHTML

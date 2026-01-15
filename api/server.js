@@ -18,8 +18,8 @@ const portDefault = 4000
 var allowedOrigins = [
   'http://localhost:4000',
   'http://localhost:8080',
-  'http://192.168.2.105:8080',
-  'http://192.168.2.105:4000',
+  'http://192.168.2.106:8080',
+  'http://192.168.2.106:4000',
   'https://chesshub.overlemon.com',
   'https://chesshub-api.overlemon.com'
   //'https://flitz.herokuapp.com',

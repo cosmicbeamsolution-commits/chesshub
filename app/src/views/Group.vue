@@ -315,6 +315,12 @@ export default {
         this.$store.dispatch('games', data)
         swal.close()
         this.$router.push(`/play/${this.$route.params.group}/${data.id}`)
+        /* this.$router.push({
+          name: 'Play',
+          params: {
+            id: match.group,
+          }
+        }) */
       }
     },
     reject (data) {

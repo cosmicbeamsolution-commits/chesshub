@@ -195,6 +195,8 @@ export default new Vuex.Store({
           resolve(stored)
         } else {
           var settings = DefaultSettings
+
+          console.log(this.onLine + ':' + this.$root.onLine)
           axios.post('https://ipapi.co/json').then(json => {
             axios.get('/json/flags.json').then(flags => {
               if (flags.data[json.data.country_code]) {

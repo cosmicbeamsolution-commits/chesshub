@@ -224,16 +224,21 @@ export default {
           group: data.group
         }
         localStorage.setItem('match', JSON.stringify(match))
-        this.$router.push(`/play/${data.game}`)
+        this.$router.push({
+          name: 'Play',
+          params: {
+            id: data.game
+          }
+        })
       }
     },
-    pong (ms) {
-      if (ms > 999) {
-        ms = Math.round(ms / 1000) + 's'
+    pong (millisecs) {
+      if (millisecs > 999) {
+        millisecs = Math.round(millisecs / 1000) + 's'
       } else {
-        ms += 'ms'
+        millisecs += 'ms'
       }
-      this.latency = ms
+      this.latency = millisecs
     },
     playing (data) {
       this.idle = data?.idle
@@ -243,7 +248,9 @@ export default {
   methods: {
     saveSound () {
       this.$store
-        .dispatch('player', { sound: !(this.player.sound) })
+        .dispatch('player', {
+          sound: !(this.player.sound)
+        })
         .then(this.preventSound)
     },
     previewSound () {
