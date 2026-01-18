@@ -106,7 +106,7 @@
                       </span>
                     </button>
                     <!--button @click="showPGN()" class="button is-small is-info" v-if="pgnIndex.length && announced_game_over" title="Mostrar PGN">
-                      <strong>PGN</strong>
+                      <b>PGN</b>
                     </button-->
                   </div>
                 </div>
@@ -126,18 +126,18 @@
               <div class="columns has-text-centered">
                 <div class="column">
                   <div class="field gap-1">
-                    <strong class="has-text-grey is-size-5">{{ eco }}</strong>
+                    <b class="has-text-grey is-size-5">{{ eco }}</b>
                     <span class="has-text-weight-bold is-size-5">{{ opening }}</span>
                   </div>
                   <div v-show="match.results" id="matchresults" class="columns is-mobile is-narrow">
                     <div class="column is-3">
                       <div class="">
-                        <strong v-if="data.white > data.black">{{ data.white }}</strong>
-                        <strong v-else>{{ data.black }}</strong>
+                        <b v-if="data.white > data.black">{{ data.white }}</b>
+                        <b v-else>{{ data.black }}</b>
                       </div>
                       <div>
-                        <strong v-if="data.white > data.black">{{ data.black }}</strong>
-                        <strong v-else>{{ data.white }}</strong>
+                        <b v-if="data.white > data.black">{{ data.black }}</b>
+                        <b v-else>{{ data.white }}</b>
                       </div>
                     </div>
                     <div class="column is-1" v-for="(item, index) in match.results" :key="index">
@@ -161,12 +161,12 @@
                 <ul>
                   <li :class="{ 'is-active' : tab === 'chat' }">
                     <a @click="tab = 'chat'" title="Chat">
-                      <span class="icon"><i class="mdi mdi-comment-text-outline" aria-hidden="true"></i></span>
+                      <span class="icon scheme-preserve"><i class="mdi mdi-comment-text-outline" aria-hidden="true"></i></span>
                     </a>
                   </li>
                   <li :class="{ 'is-active' : tab === 'pgn' }">
                     <a @click="tab = 'pgn'" title="Plys">
-                      <span class="icon"><i class="mdi mdi-view-list" aria-hidden="true"></i></span>
+                      <span class="icon scheme-preserve"><i class="mdi mdi-view-list" aria-hidden="true"></i></span>
                     </a>
                   </li>
                 </ul>
@@ -275,7 +275,7 @@ export default {
       this.$router.push(`/play/${data.game}`)
     },
     game_updated (data) {
-      if (data.result) {
+      if (this.game.game_over()) {
         let elo = data.blackelo
         if (this.playerColor[0] === 'w') {
           elo = data.whiteelo
@@ -296,14 +296,14 @@ export default {
       }
     },
     start (data) {
-      var t = this
+      // var t = this
       setTimeout(() => {
-        if (!t.gameStarted && !t.data.result) {
-          t.gameStarted = true
-          t.boardTaps()
+        if (!this.gameStarted && !this.data.result) {
+          this.gameStarted = true
+          this.boardTaps()
           PlaySound('start.mp3')
         }
-      }, 400)
+      }, 3000)
     },
     joined (data) {
       if (data.code !== this.player.code && !this.announced_game_over) {
@@ -322,15 +322,18 @@ export default {
 
       setTimeout(() => {
         if (this.usersJoined.length === 2 && !this.data.result) {
-          let match = JSON.parse(localStorage.getItem('match'))
-          this.$socket.emit('action', {
+          // let match = JSON.parse(localStorage.getItem('match'))
+          this.gameStarted = true
+          this.boardTaps()
+          PlaySound('start.mp3')
+          /* this.$socket.emit('action', {
             action: 'start',
             player: this.player,
             group: match.group,
             id: this.$route.params.game
-          })
+          }) */
         }
-      }, 3000)
+      }, 1000)
     },
     gone (data) {
       if (data.player !== this.player.code) {
@@ -1171,22 +1174,22 @@ export default {
       this.chart.points = []
       this.chart.values = this.chart.values.filter(e => e)
       if (this.chart.values.length > 1) {
-        var points = '0,' + this.chart.height + ' '
+        const fixedHeight = parseFloat(this.chart.height) + 1
+        var points = '0,' + fixedHeight + ' '
         for (var x = 0; x < this.chart.values.length; x++) {
           var perc = this.chart.values[x] / this.chart.maxValue
           var steps = 100 / (this.chart.values.length - 1)
-          var point = (steps * (x)).toFixed(2) + ',' + (this.chart.height - (this.chart.height * perc)).toFixed(2) + ' '
+          var point = (steps * (x)).toFixed(2) + ',' + (fixedHeight - (fixedHeight * perc)).toFixed(2) + ' '
           points += point
         }
-        points += '100,' + this.chart.height
+        points += '100,' + fixedHeight
         this.chart.points = points
       }
     },
     drawChart (index) {
       if (!this.game.game_over()) {
-        var score = this.vscore
-
-        if (this.playerColor === 'white') {
+        let score = this.vscore
+        if (this.playerColor === 'black') {
           score = 100 - score
         }
 
@@ -1401,7 +1404,7 @@ export default {
         values: [51],
         points: []
       },
-      secondsToProceed: 10,
+      secondsToProceed: 120,
       data: {},
       engineStatus: {},
       tab: 'pgn',

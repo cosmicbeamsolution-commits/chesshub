@@ -41,7 +41,7 @@
           <div>
             <div v-for="(item, index) in players" :key="index">
               <router-link :to="`/search?q=${item.code}&strict=1`" :title="item.code">
-                <span class="mini-button has-background-light" :class="{ 'opacity25': item.code === player.code }">
+                <span v-if="item.code !== player.code" class="mini-button has-background-light" :class="{ 'opacity75': item.code === player.code }">
                   <span class="icon">
                     <span v-html="item.flag"></span>
                   </span>
@@ -61,18 +61,18 @@
         <div class="column">
           <div class="tabs is-marginless">
             <ul>
-              <li :class="{ 'is-active' : tab === 'chat' }">
-                <a @click="setTab('chat')" title="Chat" class="gap-11">
-                  <span class="icon is-marginless">
-                    <i class="mdi mdi-comment-text-outline is-size-4" aria-hidden="true"></i>
-                  </span> {{ 'chat' | t }}
-                </a>
-              </li>
               <li :class="{ 'is-active' : tab === 'results' }">
                 <a @click="setTab('results')" :title="'results' | t" class="gap-11">
                   <span class="icon is-marginless">
                     <i class="mdi mdi-view-list is-size-4" aria-hidden="true"></i>
                   </span> {{ 'results' | t }}
+                </a>
+              </li>
+              <li :class="{ 'is-active' : tab === 'chat' }">
+                <a @click="setTab('chat')" title="Chat" class="gap-11">
+                  <span class="icon is-marginless">
+                    <i class="mdi mdi-comment-text-outline is-size-4" aria-hidden="true"></i>
+                  </span> {{ 'chat' | t }}
                 </a>
               </li>
               <li v-show="games.length" :class="{ 'is-active' : tab === 'playing' }">
@@ -132,7 +132,7 @@
             <div v-else class="alert notification alert-warning">{{ 'no_results' | t }}</div>
           </div>
           <div v-show="tab === 'chat'">
-            <div class="column has-text-centered box is-padded min-20">
+            <div class="column has-text-centered is-padded min-20">
               <div class="columns">
                 <div class="column chatbox-container">
                   <div class="chatbox fadeIn">
@@ -173,7 +173,7 @@
             </div>
           </div>
           <div v-show="tab === 'results'" class="fadeIn min-20">
-            <div class="column box">
+            <div class="column">
               <div v-if="!data.results.length" class="column">
                 <!--span>{{ 'group_not_found_text' | t }}</span-->
                 <span v-html="$root.t('group_no_results', { q: data.code })"></span>
@@ -215,7 +215,7 @@ export default {
       showResultsAll: false,
       groupKey: 0,
       chat: '',
-      tab: 'chat',
+      tab: 'results',
       tried: false,
       games: [],
       boards: [],
@@ -245,6 +245,7 @@ export default {
   },
   sockets: {
     group_updated (data) {
+      console.log('group_updated', data)
       this.data = data
       if (data.owner._id === this.player._id) {
         swal.close()
@@ -313,8 +314,16 @@ export default {
     play (data) {
       if (data.asker === this.player.code) {
         this.$store.dispatch('games', data)
+        console.log('invite(2)', data.id)
+        this.$router.push({
+          name: 'Play',
+          params: {
+            game: this.$route.params.group,
+            id: data.id
+          }
+        })
         swal.close()
-        this.$router.push(`/play/${this.$route.params.group}/${data.id}`)
+        // `/play/${this.$route.params.group}/${data.id}`)
         /* this.$router.push({
           name: 'Play',
           params: {
@@ -351,6 +360,7 @@ export default {
                 player: data.player.code,
                 id: response.data.id
               })
+              console.log('invite', response.data.id)
               this.$router.push(['/play', response.data.id].join('/'))
             } else {
               Snackbar('danger', 'El juego no pudo ser creado.')
@@ -403,6 +413,7 @@ export default {
                       id: res.data.id
                     })
                     this.$store.dispatch('games', res.data)
+                    console.log('invite(1)', res.data.id)
                     this.$router.push(`/play/${res.data.id}`)
                   } else {
                     Snackbar('danger', 'El juego no pudo ser creado.')
@@ -478,11 +489,11 @@ export default {
     setGroupRules () {
       const template = (`
 <div class="content">
-  <div class="columns is-group-edit is-flex has-text-centered">
+  <div class="columns is-group-edit is-flex flex-md-col has-text-centered">
     <div class="column">
       <h4>
         <span class="icon">
-          <span class="mdi mdi-edit"></span>
+          <span class="mdi mdi-pencil"></span>
         </span>
         <span>${this.$root.t('name')}</span>
       </h4>
@@ -509,7 +520,7 @@ export default {
     <div class="column">
       <h4>
         <span class="icon">
-          <span class="mdi mdi-retweet"></span>
+          <span class="mdi mdi-twitter-retweet"></span>
         </span>
         <span>${this.$root.t('rounds')}</span>
       </h4>
@@ -536,14 +547,14 @@ export default {
             <button class="button is-toggle">1'</button>
             <button class="button is-toggle has-background-success">3'</button>
             <button class="button is-toggle">5'</button>
-            <button class="button is-toggle">15'</button>
+            <button class="button is-toggle">10'</button>
             <button class="button is-toggle">30'</button>
           </div>
         </div>
       </div>
       <h4>
         <span class="icon">
-          <span class="mdi mdi-stopwatch"></span>
+          <span class="mdi mdi-timer"></span>
         </span>
         <span>${this.$root.t('compensation')}</span>
       </h4>
@@ -647,7 +658,6 @@ export default {
       })
     },
     gameStart (data) {
-      console.log('gameStart')
       let t = this
       return new Promise(function (resolve, reject) {
         var pos = 'start'

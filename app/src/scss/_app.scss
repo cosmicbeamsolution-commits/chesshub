@@ -8,11 +8,11 @@ html, body {
 
 @media (prefers-color-scheme: dark) {
   ::placeholder {
-    color: #777!important;
+    color: #888!important;
   }
-  html, body, .menu, .menu-bg, .swal-modal, .swal-footer, .swal-title, .swal-text {
+  html, body, .menu, .menu-items a, .menu-bg, .swal-modal, .swal-footer, .swal-title, .swal-text {
     background-color: #333!important;
-    color: #999;
+    color: #f8f8f8!important;
   }
   h1, 
   h2, 
@@ -27,7 +27,6 @@ html, body {
       color: #888;
     }
   }
-  span,
   .label,
   .content table thead td, 
   .content table thead th {
@@ -40,24 +39,24 @@ html, body {
   }
   blockquote,
   table,
+  .button,
   .swal-footer,
   .select select, 
   .textarea, 
   .input,
   .box {
-    background-color: #333;
+    background-color: #444!important;
     border-color: #666!important;
     color: #f8f8f8;
+    &:hover {
+      color: #888!important;
+    }
   }
   .table.is-striped tbody tr:not(.is-selected):nth-child(even)  {
-    background-color: #999;
+    background-color: #444;
   }
-  .button {
-    span {
-      &:hover {
-        color: #fff!important;
-      }
-    }
+  .table span {
+    color: #f8f8f8;
   }
   .menu-burger {
     svg {
@@ -74,6 +73,18 @@ html, body {
   }
   .has-background-light {
     background-color: #666!important;
+  }
+  .has-checkradio {
+    /* .is-checkradio[type=checkbox].is-white:checked.has-background-color + label::before, .is-checkradio[type=checkbox].is-white:checked.has-background-color + label:before {
+      background-color: #444!important;
+    } 
+    .is-checkradio[type=checkbox].is-white:checked.has-background-color + label::after, .is-checkradio[type=checkbox].is-white:checked.has-background-color + label:after {
+      border-color: #888!important;
+    } */
+    .is-checkradio[type=checkbox].is-white.has-background-color + label::before, .is-checkradio[type=checkbox].is-white.has-background-color + label:before   {
+      background-color: #333!important;
+      border-color: #444!important;
+    }
   }
 }
 
@@ -109,15 +120,15 @@ label {
 }
 
 ::placeholder {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .d-inline {
   display: inline;
 }
 
-.opacity25 {
-  opacity: 0.25;
+.opacity75 {
+  opacity: 0.75;
 }
 
 .expand {
@@ -180,7 +191,7 @@ label {
 }
 
 .bg-transparent {
-  background-color: transparent;
+  background-color: transparent!important;
 }
 
 .bg-translucid {
@@ -228,17 +239,9 @@ label {
   gap: 1rem;
 }
 
-.parent-translucid {
-  input, button, select, textarea, a {
-    opacity: 0.9;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-  }
-}
-
 .buttons.has-addons {
   justify-content: center;
   .button {
-    box-shadow: 0px 10px 20px #00000015;
     min-width: 2.75rem;
     border: none;
     &.has-background-success {
@@ -300,6 +303,12 @@ label {
 
 .flex-column {
   flex-direction: column;
+}
+
+@media(max-width: 992px) {
+  .flex-md-col {
+    flex-direction: column;
+  }
 }
 
 .gap-1 {
@@ -591,9 +600,7 @@ span {
       flex-direction: column;
       height: calc(100vh - 120px);
       opacity: 0;
-      -webkit-transition: .4s;
       transition: .4s;
-      -webkit-transform: translateY(-200%);
       transform: translateY(-200%);
       pointer-events: none;
       position: relative;
@@ -610,7 +617,8 @@ span {
     }
 
     .menu-items a:not(.button) {
-      font-size: 1rem;
+      font-size: 1.25rem;
+      font-weight: 300;
       color: #111;
       display: block;
     }
@@ -637,6 +645,10 @@ span {
 
   .menu.active {
     background-color: #ffec01!important;
+  }
+
+  .notification   {
+    background-color: rgba(0,0,0,0.2)!important;
   }
 
 /*.menu.secondary {
@@ -721,6 +733,7 @@ span {
   }
 
   .button {
+    background-color: #f8f8f8;
     font-weight: 600;
   }
 
@@ -1279,6 +1292,7 @@ span {
 
   .box {
     border-radius: 5px;
+    border: 1px solid #888;
   }
 
   .is-horizontal {

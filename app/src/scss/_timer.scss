@@ -1,14 +1,12 @@
-$duration: 10s;
+$duration: 120s;
 
 .pietimer {
   position: relative;
   margin: 40px auto;
-  background: white;
+  background: transparent;
 }
 
 .pietimer, .pietimer * {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
 
@@ -23,7 +21,7 @@ $duration: 10s;
   transform-origin: 100% 50%;
   position: absolute;
   background: #6decb9;
-  border: 4px solid #0c9463;
+  border: 5px solid #0c9463;
 }
 
 .pietimer .spinner {

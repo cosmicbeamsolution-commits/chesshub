@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "Graphik Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Graphik Bold"), url("/fonts/graphik/GraphikBold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Graphik SemiBold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Graphik SemiBold"), url("/fonts/graphik/GraphikSemibold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Graphik Medium";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Graphik Medium"), url("/fonts/graphik/GraphikMedium.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Graphik Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Graphik Regular"), url("/fonts/graphik/GraphikRegular.otf") format("opentype");
+}

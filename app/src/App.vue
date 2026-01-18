@@ -41,7 +41,7 @@
               </div>
             </div>
           </div-->
-          <a @click="$root.play" class="button is-rounded is-success min-3" :class="{ 'is-loading': $root.isFindingOpponent }" :title="'search_opponent' | t">
+          <a v-show="!non_playable" @click="$root.play" class="button is-rounded is-success min-3" :class="{ 'is-loading': $root.isFindingOpponent }" :title="'search_opponent' | t">
             <span class="icon has-text-white">
               <span class="fa fa-handshake"></span>
             </span>
@@ -115,9 +115,9 @@
         </div>
       </div>
     </div>
-    <keep-alive include="lobby">
+    <!--keep-alive include="Landing"-->
       <router-view v-show="!$root.loading" :key="$route.fullPath" />
-    </keep-alive>
+    <!--/keep-alive-->
     <div class="tosprompt"></div>
     <div class="ui-snackbar ui-snackbar--is-inactive" :class="{
       'is-strong' : player.strongnotification
@@ -162,6 +162,15 @@ export default {
       idle: 0,
       playing: 0,
       latency: 0,
+      nonPlayable: [
+        'Stockfish',
+        'Settings',
+        'Exhibit',
+        'Live',
+        'Watch',
+        'Game',
+        'Play'
+      ],
       menu: [{
         to: 'settings',
         mdi: 'mdi-account-cog'
@@ -190,6 +199,9 @@ export default {
     }
   },
   computed: {
+    non_playable () {
+      return this.nonPlayable.includes(this.$route.name)
+    },
     year () {
       return moment().format('YYYY')
     },
@@ -217,6 +229,7 @@ export default {
       })
     },
     game_spawn (data) {
+      console.log('game_spawn', data)
       if (data.white === this.player.code || data.black === this.player.code) {
         this.$root.isFindingOpponent = false
         let match = {
@@ -227,7 +240,7 @@ export default {
         this.$router.push({
           name: 'Play',
           params: {
-            id: data.game
+            game: data.game
           }
         })
       }
@@ -251,7 +264,7 @@ export default {
         .dispatch('player', {
           sound: !(this.player.sound)
         })
-        .then(this.preventSound)
+        .then(this.previewSound)
     },
     previewSound () {
       setTimeout(() => {

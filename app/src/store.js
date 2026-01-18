@@ -15,10 +15,9 @@ export default new Vuex.Store({
     games: games,
     status: null,
     auth: JSON.parse(localStorage.getItem('auth')) || {},
-    endpoint: (process.env.NODE_ENV === 'production'
+    endpoint: process.env.NODE_ENV === 'production' && location.href.includes('overlemon.com')
       ? 'https://chesshub-api.overlemon.com'
       : 'http://192.168.2.106:4000'
-    )
   },
   mutations: {
     /* A fit-them-all commit */
@@ -175,7 +174,6 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         const stored = JSON.parse(localStorage.getItem('player')) || {}
         const props = data || {}
-
         if (Object.keys(stored).length && stored._id) {
           if (!stored.elo) {
             stored.elo = 1500
@@ -195,16 +193,21 @@ export default new Vuex.Store({
           resolve(stored)
         } else {
           var settings = DefaultSettings
-          axios.post('https://ipapi.co/json').then(json => {
-            axios.get('/json/flags.json').then(flags => {
-              if (flags.data[json.data.country_code]) {
-                settings.flag = flags.data[json.data.country_code].emoji || ''
-                settings.country = flags.data[json.data.country_code].name || ''
-              }
-              commit('player_success', settings)
-              resolve(settings)
+          if (process.env.NODE_ENV !== 'production' || !location.href.includes('overlemon.com')) {
+            commit('player_success', settings)
+            resolve(settings)
+          } else {
+            axios.post('https://ipapi.co/json').then(json => {
+              axios.get('/json/flags.json').then(flags => {
+                if (flags.data[json.data.country_code]) {
+                  settings.flag = flags.data[json.data.country_code].emoji || ''
+                  settings.country = flags.data[json.data.country_code].name || ''
+                }
+                commit('player_success', settings)
+                resolve(settings)
+              })
             })
-          })
+          }
         }
       })
     }

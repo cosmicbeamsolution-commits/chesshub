@@ -1,6 +1,6 @@
 <template>
   <div class="container is-widescreen">
-    <div class="content column fadeIn">
+    <div class="content column fadeIn w-100">
       <h3>
         <span class="icon">
           <span class="mdi mdi-book"></span>
@@ -26,8 +26,8 @@
           </div>
         </div>
       </form>
-      <div v-show="Object.keys(data).length" class="has-text-left">
-        <table class="table is-narrow is-striped is-fullwidth">
+      <div v-show="Object.keys(data).length" class="has-text-left w-100">
+        <table class="table is-striped is-fullwidth">
           <thead>
             <th></th>
             <th>{{ 'name' | t }}</th>

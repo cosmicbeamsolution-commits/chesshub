@@ -44,7 +44,7 @@ const router = new Router({
     { path: '/live', name: 'Live', component: Live },
     { path: '/dash', name: 'Dash', component: Dash },
     { path: '/game/:game', name: 'Game', component: Game },
-    { path: '/play/:game', name: 'Play', component: Play },
+    { path: '/play/:game/:id?', name: 'Play', component: Play },
     { path: '/watch/:game', name: 'Watch', component: Watch },
     { path: '/groups', name: 'Groups', component: Groups },
     { path: '/group/:group', name: 'Group', component: Group },

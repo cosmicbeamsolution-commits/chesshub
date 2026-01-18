@@ -7,7 +7,7 @@
     </div>
     <div class="container is-widescreen">
       <div class="content expand fadeIn">
-        <div class="columns expand gap-2 fadeIn">
+        <div class="columns expand gap-1 fadeIn">
           <div class="column">
             <div class="board-container">
               <h6 class="black has-text-left" v-show="game">
@@ -157,14 +157,15 @@ export default {
       this.chart.points = []
       this.chart.values = this.chart.values.filter(e => e)
       if (this.chart.values.length > 1) {
-        var points = '0,' + this.chart.height + ' '
+        const fixedHeight = parseFloat(this.chart.height) + 1
+        var points = '0,' + fixedHeight + ' '
         for (var x = 0; x < this.chart.values.length; x++) {
           var perc = this.chart.values[x] / this.chart.maxValue
           var steps = 100 / (this.chart.values.length - 1)
-          var point = (steps * (x)).toFixed(2) + ',' + (this.chart.height - (this.chart.height * perc)).toFixed(2) + ' '
+          var point = (steps * (x)).toFixed(2) + ',' + (fixedHeight - (fixedHeight * perc)).toFixed(2) + ' '
           points += point
         }
-        points += '100,' + this.chart.height
+        points += '100,' + fixedHeight
         this.chart.points = points
       }
     },

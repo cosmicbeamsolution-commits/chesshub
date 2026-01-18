@@ -5,8 +5,8 @@ import swal from 'sweetalert'
 import moment from 'moment'
 import Snackbar from '@/components/Snackbar'
 import { mapState } from 'vuex'
-// import '@mdi/font/css/materialdesignicons.css'
 import '@mdi/font/css/materialdesignicons.css'
+// import '@/assets/css/graphik.css'
 import '@/scss/main.scss'
 
 /* Router & Store */

@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken')
 const moment = require('moment')
-var ObjectId = require('mongodb').ObjectId
-let socketUsers = {}
-var EloRating = require('elo-rating')
-var gamesort = {date:-1}
-var groups = {}
-var games = {}
-var movecompensation = 2
 const socket = require('socket.io')
+let ObjectId = require('mongodb').ObjectId
+let socketUsers = {}
+let EloRating = require('elo-rating')
+let gamesort = {date:-1}
+let groups = {}
+let games = {}
+let movecompensation = 2
 let io
 
 module.exports = (http, db) => {
@@ -35,31 +35,36 @@ module.exports = (http, db) => {
 	    }   
 		})
 
-    socket.on('join',  (data) => {
+    socket.on('join', (data) => {
 	    if (data.game) {
 	      socket.join(data.game._id)
 
-        console.log('a(1)',data.game._id)
-        console.log('a(2)',games[data.game._id])
+        // console.log('join(data)',data)
 	      if(!games[data.game._id]){
 	        games[data.game._id] = data
-	        console.log(data.game._id + " game ready to start")
+	        //console.log(data.game._id + " game ready to start")
 	      }
 
 	      // io.emit('games', games)
-
+        //console.log('join(5)',groups)
 	      for(var i in groups){
+          console.log('join(players)',i,Object.keys(groups[i].players).length)
+          //console.log('join(7)',data.player._id)
+
 	        for(var j in groups[i].players) {
+            //console.log('a(8)',groups[i].players[j])
+            console.log('a(8)',groups[i].players[j]._id,data.player._id)
 	          if (groups[i].players[j]._id === data.player._id) {
 	            groups[i].players[j].plying = true
 	            io.emit('joined', groups[i].players[j])
+              console.log('a(3)','joined', groups[i].players[j].code)
+              //console.log('a(4)',i, groups[i].players)
 	            io.to(i).emit('players', groups[i].players)
 	          }
 	        }
 	      }
+        //console.log('join(groups)',groups)
 	    }		
-
-      console.log('groups',groups.length)
 		})
 
     socket.on('leave', function(data) {
@@ -175,7 +180,7 @@ module.exports = (http, db) => {
 	    let event = 'landing'
 	    let id = data.group
 	    if (groups[id]) {
-        console.log('a(2)')
+        //console.log('a(2)')
 	      Object.keys(groups[id].players).forEach(i => {
 	        let player = groups[id].players[i]
 	        player.socket = socket.id
@@ -187,7 +192,7 @@ module.exports = (http, db) => {
 	      })
 	    }
 
-      console.log('item', item)
+      //console.log('item', item)
 	    if (item._id) {
 	      let white = item.player
 	      let black = data.player
@@ -231,7 +236,6 @@ module.exports = (http, db) => {
 	        }
 	      })
 	    } else {
-
 	      Object.keys(groups).forEach(i => {
 	        Object.keys(groups[i].players).forEach(j => {
 	          let player = groups[i].players[j]
@@ -251,20 +255,23 @@ module.exports = (http, db) => {
     socket.on('group_join', (data) => {
 	    if (!Object.keys(data.group).length) return false
 	    
-	    console.log('group',data.group)
+	    // console.log('group_join(group)',data.group)
 	    let id = data.group._id
 	    
 	    if (!groups[id]) {
 	      groups[id] = data.group
+        console.log('creating players in ', id)
 	      groups[id].players = {}
 	    }
 
 	    if(!groups[id].players[data.player._id]) {
 	      data.player.socket = socket.id
 	      groups[id].players[data.player._id] = data.player
+        console.log('setting player ', data.player._id)
 	      console.log(`${data.player.code} joins ${groups[id].code}`)
 	    }
 
+      // console.log('group_join(set player)', data.player._id)
 	    groups[id].players[data.player._id].plying = false
 	    socket.join(id)
 	    io.to(id).emit("group_join", data.player)
@@ -287,7 +294,8 @@ module.exports = (http, db) => {
 	    if (groups[id]) {
 	      if (groups[id].players[data.player._id]) {
 	        io.to(id).emit("group_leave", data.player)
-	        delete groups[id].players[data.player._id]
+          console.log('group leave ', data.player._id)
+	        // delete groups[id].players[data.player._id]
 	        console.log(`${data.player.code} leaves ${groups[id].code}`)
 	      }
 
@@ -306,7 +314,7 @@ module.exports = (http, db) => {
 		})
 
     socket.on('action',  (data) => {
-			console.log('action', data)
+			console.log('action', data.action, data.id)
 			io.to(data.id).emit(data.action, data)
 		})
 
@@ -401,6 +409,7 @@ module.exports = (http, db) => {
         }
       }
 
+      console.log('game', data)
       return db.collection('games').findOneAndUpdate(
       {
         '_id': new ObjectId(id)
@@ -477,6 +486,7 @@ module.exports = (http, db) => {
       var id = data._id
       data.updatedAt = moment().utc().format()      
       delete data._id
+      console.log('group', id, data)
       return db.collection('groups').findOneAndUpdate(
       {
         '_id': new ObjectId(id)
@@ -487,6 +497,7 @@ module.exports = (http, db) => {
         'new': true, 
         returnOriginal:false 
       }).then(function(doc){
+        console.log('doc',doc.value)
         io.to(id).emit('group_updated', doc.value)
       })
     })

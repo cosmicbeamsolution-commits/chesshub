@@ -647,12 +647,6 @@
     "name": "Ireland",
     "emoji": "🇮🇪"
   },
-  "IL": {
-    "code": "IL",
-    "unicode": "U+1F1EE U+1F1F1",
-    "name": "Israel",
-    "emoji": "🇮🇱"
-  },
   "IM": {
     "code": "IM",
     "unicode": "U+1F1EE U+1F1F2",
@@ -1130,7 +1124,7 @@
   "PS": {
     "code": "PS",
     "unicode": "U+1F1F5 U+1F1F8",
-    "name": "Palestinian Territories",
+    "name": "Palestine",
     "emoji": "🇵🇸"
   },
   "PT": {

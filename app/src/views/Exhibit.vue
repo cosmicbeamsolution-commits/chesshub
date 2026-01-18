@@ -48,137 +48,132 @@
       </div>
     </div>
     <div class="content expand" v-show="time.level > -1">
-      <div class="columns is-gapless expand gap-2 fadeIn" :class="boardColor">
-        <div class="column">
-          <div class="board-container">
-            <div class="board">
-              <div class="score-container">
-                <div class="score" :style="'max-height:' + vscore + '%'"></div>
-              </div>
-              <span @click="toggleFullscreen = !toggleFullscreen" class="board-toggle button is-borderless is-medium bg-transparent icon">
-                <i class="mdi" :class="{
-                  'mdi-fullscreen-exit': toggleFullscreen,
-                  'mdi-fullscreen': !toggleFullscreen
-                }"/>
-              </span>
-              <div id="board"/>
+      <div class="is-flex-centered gap-2 fadeIn" :class="boardColor">
+        <div class="board-container">
+          <div class="board">
+            <div class="score-container">
+              <div class="score" :style="'max-height:' + vscore + '%'"></div>
             </div>
+            <span @click="toggleFullscreen = !toggleFullscreen" class="board-toggle button is-borderless is-medium bg-transparent icon">
+              <i class="mdi" :class="{
+                'mdi-fullscreen-exit': toggleFullscreen,
+                'mdi-fullscreen': !toggleFullscreen
+              }"/>
+            </span>
+            <div id="board"/>
           </div>
         </div>
-        <div class="column">
-          <!--pre v-html="chart.values"/-->
-          <div class="container board-assistant">
-            <div class="columns is-mobile has-text-centered w-100">
-              <div class="white column is-paddingless">
-                <span class="icon">
-                  <span class="mdi mdi-checkbox-blank-circle has-text-white"></span>
-                </span>
-                <span v-show="data.result === '1-0'">🏆</span>
-                <span class="has-text-weight-bold">{{ opponentName }}</span>
-              </div>
-              <div class="black column is-paddingless">
-                <span class="icon">
-                  <span class="mdi mdi-checkbox-blank-circle has-text-black"></span>
-                </span>
-                <span v-show="data.result === '0-1'">🏆</span>
-                <span class="has-text-weight-bold">{{ opponentName }}</span>
-                <span class="button is-small thinking" :class="{'is-loading' : isEngineRunning || thinking }"></span>
+        <div class="container board-assistant">
+          <div class="columns is-mobile has-text-centered w-100">
+            <div class="white column is-paddingless">
+              <span class="icon">
+                <span class="mdi mdi-checkbox-blank-circle has-text-white"></span>
+              </span>
+              <span v-show="data.result === '1-0'">🏆</span>
+              <span class="has-text-weight-bold">{{ opponentName }}</span>
+            </div>
+            <div class="black column is-paddingless">
+              <span class="icon">
+                <span class="mdi mdi-checkbox-blank-circle has-text-black"></span>
+              </span>
+              <span v-show="data.result === '0-1'">🏆</span>
+              <span class="has-text-weight-bold">{{ opponentName }}</span>
+              <span class="button is-small thinking" :class="{'is-loading' : isEngineRunning || thinking }"></span>
+            </div>
+          </div>
+          <div class="columns has-text-centered" v-show="pgnIndex.length">
+            <div class="column">
+              <div class="buttons levels has-addons" :title="'stockfish_options' | t">
+                <!--button @click="undo()" class="button is-warning" v-if="index > 2 && !announced_game_over">
+                  <span class="icon has-text-white">
+                    <span class="mdi mdi-undo-variant"></span>
+                  </span>
+                </button-->
+                <button @click="askForRematch()" class="button" v-if="!announced_game_over">
+                  <span class="icon">
+                    <span class="mdi mdi-flag"></span>
+                  </span>
+                </button>
+                <button @click="showHint()" class="button" v-if="pgnIndex.length && !announced_game_over" :disabled="hintMode">
+                  <span class="icon">
+                    <span class="mdi mdi-timeline-help"></span>
+                  </span>
+                </button>
+                <button @click="askForRematch()" class="button" v-if="announced_game_over">
+                  <span class="icon">
+                    <span class="mdi mdi-replay"></span>
+                  </span>
+                </button>
+                <button @click="showPGN()" class="button" v-if="pgnIndex.length">
+                  <strong>PGN</strong>
+                </button>
               </div>
             </div>
-            <div class="columns has-text-centered" v-show="pgnIndex.length">
-              <div class="column">
-                <div class="buttons levels has-addons" :title="'stockfish_options' | t">
-                  <!--button @click="undo()" class="button is-warning" v-if="index > 2 && !announced_game_over">
-                    <span class="icon has-text-white">
-                      <span class="mdi mdi-undo-variant"></span>
-                    </span>
-                  </button-->
-                  <button @click="askForRematch()" class="button is-danger" v-if="!announced_game_over">
-                    <span class="icon has-text-white">
-                      <span class="mdi mdi-flag"></span>
-                    </span>
-                  </button>
-                  <button @click="showHint()" class="button is-success" v-if="pgnIndex.length && !announced_game_over" :disabled="hintMode">
-                    <span class="icon has-text-white">
-                      <span class="mdi mdi-timeline-help"></span>
-                    </span>
-                  </button>
-                  <button @click="askForRematch()" class="button is-success" v-if="announced_game_over">
-                    <span class="icon">
-                      <span class="mdi mdi-replay"></span>
-                    </span>
-                  </button>
-                  <button @click="showPGN()" class="button is-info" v-if="pgnIndex.length">
-                    <strong>PGN</strong>
-                  </button>
-                </div>
+          </div>
+          <div class="columns has-text-centered">
+            <div class="column">
+              <div class="select is-fullwidth">
+                <select v-model="moveSeconds" id="piezas" title="Seconds">
+                  <option v-for="(item, index) in seconds" :key="index" :value="item">
+                    {{ item }} secs
+                  </option>
+                </select>
               </div>
             </div>
-            <div class="columns has-text-centered">
-              <div class="column">
-                <div class="select is-fullwidth">
-                  <select v-model="moveSeconds" id="piezas" title="Seconds">
-                    <option v-for="(item, index) in seconds" :key="index" :value="item">
-                      {{ item }} secs
-                    </option>
-                  </select>
-                </div>
+          </div>
+          <div class="columns has-text-centered">
+            <div class="column">
+              <div class="field gap-1">
+                <strong class="has-text-grey is-size-5">{{ eco }}</strong>
+                <span class="has-text-weight-bold is-size-5">{{ opening }}</span>
+              </div>
+              <!--div class="field">
+                <span v-html="status" class="has-text-black"></span>
+              </div-->
+            </div>
+          </div>
+          <div class="columns is-hidden-mobile w-100">
+            <div class="chart-container">
+              <div :class="playerColor">
+                <div class="chart-indicator"></div>
+                <div class="chart" v-show="pgnIndex.length"></div>
               </div>
             </div>
-            <div class="columns has-text-centered">
-              <div class="column">
-                <div class="field gap-1">
-                  <strong class="has-text-grey is-size-5">{{ eco }}</strong>
-                  <span class="has-text-weight-bold is-size-5">{{ opening }}</span>
-                </div>
-                <!--div class="field">
-                  <span v-html="status" class="has-text-black"></span>
-                </div-->
-              </div>
-            </div>
-            <div class="columns is-hidden-mobile w-100">
-              <div class="chart-container">
-                <div :class="playerColor">
-                  <div class="chart-indicator"></div>
-                  <div class="chart" v-show="pgnIndex.length"></div>
-                </div>
-              </div>
-            </div>
-            <div class="columns is-hidden-mobile w-100">
-              <div v-show="pgnIndex.length" class="movesTableContainer">
-                <div class="movesTable">
-                  <div class="moveRow" v-for="(move, index) in pgnIndex" :key="index">
-                    <div class="moveNumCell" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
-                      <span class="scheme-preserve" v-html="(index+1)"></span>
-                    </div>
-                    <div class="moveCell moveSAN movew" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
-                      <a v-if="move.white" :class="'moveindex m' + (move.i-2)" @click="gamePos(move.i-2)">
-                        <span class="scheme-preserve" v-html="move.white"></span>
-                        <span v-if="annotations[index * 2]" class="icon scheme-preserve">
-                          <span class="mdi scheme-preserve" :class="{ 'mdi-sticker-plus has-text-success' : annotations[index * 2] === '$1', 'mdi-sticker-check' : annotations[index * 2] === '$3', 'mdi-sticker-minus' : annotations[index * 2] === '$2', 'mdi-sticker-remove' : annotations[index * 2] === '$4', 'mdi-book-open': annotations[index * 2] === '$12', 'mdi-sticker-alert': annotations[index * 2] === '$14', 'mdi-sticker-emoji': annotations[index * 2] === '$15'}"></span>
-                        </span>
-                        <span v-if="performance[index * 2]" class="scheme-preserve">
-                          <small v-if="performance[index * 2]"> {{ performance[index * 2] }}</small>
-                        </span>
-                        <span v-else class="icon">
-                          <span class="mdi mdi-dots-horizontal scheme-preserve"/>
-                        </span>
-                      </a>
-                    </div>
-                    <div class="moveCell moveSAN moveb" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
-                      <a v-if="move.black" :class="'moveindex m' + (move.i-1)" @click="gamePos(move.i-1)">
-                        <span class="scheme-preserve" v-html="move.black"></span>
-                        <span v-if="annotations[index * 2 + 1]" class="icon scheme-preserve">
-                          <span class="mdi scheme-preserve" :class="{ 'mdi-sticker-plus' : annotations[index * 2 + 1] === '$1', 'mdi-sticker-check' : annotations[index * 2 + 1] === '$3', 'mdi-sticker-minus' : annotations[index * 2 + 1] === '$2', 'mdi-sticker-remove' : annotations[index * 2 + 1] === '$4', 'mdi-book-open': annotations[index * 2 + 1] === '$12', 'mdi-sticker-alert': annotations[index * 2 + 1] === '$14', 'mdi-sticker-emoji': annotations[index * 2 + 1] === '$15' }"></span>
-                        </span>
-                        <span v-if="performance[index * 2 + 1]" class="scheme-preserve">
-                          <small v-if="performance[index * 2 + 1]"> {{ performance[index * 2 + 1]}}</small>
-                        </span>
-                        <span v-else class="icon">
-                          <span class="mdi mdi-dots-horizontal scheme-preserve"/>
-                        </span>
-                      </a>
-                    </div>
+          </div>
+          <div class="columns is-hidden-mobile w-100">
+            <div v-show="pgnIndex.length" class="movesTableContainer">
+              <div class="movesTable">
+                <div class="moveRow" v-for="(move, index) in pgnIndex" :key="index">
+                  <div class="moveNumCell" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
+                    <span class="scheme-preserve" v-html="(index+1)"></span>
+                  </div>
+                  <div class="moveCell moveSAN movew" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
+                    <a v-if="move.white" :class="'moveindex m' + (move.i-2)" @click="gamePos(move.i-2)">
+                      <span class="scheme-preserve" v-html="move.white"></span>
+                      <span v-if="annotations[index * 2]" class="icon scheme-preserve">
+                        <span class="mdi scheme-preserve" :class="{ 'mdi-sticker-plus has-text-success' : annotations[index * 2] === '$1', 'mdi-sticker-check' : annotations[index * 2] === '$3', 'mdi-sticker-minus' : annotations[index * 2] === '$2', 'mdi-sticker-remove' : annotations[index * 2] === '$4', 'mdi-book-open': annotations[index * 2] === '$12', 'mdi-sticker-alert': annotations[index * 2] === '$14', 'mdi-sticker-emoji': annotations[index * 2] === '$15'}"></span>
+                      </span>
+                      <span v-if="performance[index * 2]" class="scheme-preserve">
+                        <small v-if="performance[index * 2]"> {{ performance[index * 2] }}</small>
+                      </span>
+                      <span v-else class="icon">
+                        <span class="mdi mdi-dots-horizontal scheme-preserve"/>
+                      </span>
+                    </a>
+                  </div>
+                  <div class="moveCell moveSAN moveb" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
+                    <a v-if="move.black" :class="'moveindex m' + (move.i-1)" @click="gamePos(move.i-1)">
+                      <span class="scheme-preserve" v-html="move.black"></span>
+                      <span v-if="annotations[index * 2 + 1]" class="icon scheme-preserve">
+                        <span class="mdi scheme-preserve" :class="{ 'mdi-sticker-plus' : annotations[index * 2 + 1] === '$1', 'mdi-sticker-check' : annotations[index * 2 + 1] === '$3', 'mdi-sticker-minus' : annotations[index * 2 + 1] === '$2', 'mdi-sticker-remove' : annotations[index * 2 + 1] === '$4', 'mdi-book-open': annotations[index * 2 + 1] === '$12', 'mdi-sticker-alert': annotations[index * 2 + 1] === '$14', 'mdi-sticker-emoji': annotations[index * 2 + 1] === '$15' }"></span>
+                      </span>
+                      <span v-if="performance[index * 2 + 1]" class="scheme-preserve">
+                        <small v-if="performance[index * 2 + 1]"> {{ performance[index * 2 + 1]}}</small>
+                      </span>
+                      <span v-else class="icon">
+                        <span class="mdi mdi-dots-horizontal scheme-preserve"/>
+                      </span>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -202,7 +197,6 @@ import swal from 'sweetalert'
 export default {
   name: 'Exhibit',
   destroyed () {
-    console.log('a(3)')
     clearInterval(this.moveTimeout)
   },
   mounted () {
@@ -619,21 +613,22 @@ export default {
       this.chart.points = []
       this.chart.values = this.chart.values.filter(e => e)
       if (this.chart.values.length > 1) {
-        var points = '0,' + this.chart.height + ' '
+        const fixedHeight = parseFloat(this.chart.height) + 1
+        var points = '0,' + fixedHeight + ' '
         for (var x = 0; x < this.chart.values.length; x++) {
           var perc = this.chart.values[x] / this.chart.maxValue
           var steps = 100 / (this.chart.values.length - 1)
-          var point = (steps * (x)).toFixed(2) + ',' + (this.chart.height - (this.chart.height * perc)).toFixed(2) + ' '
+          var point = (steps * (x)).toFixed(2) + ',' + (fixedHeight - (fixedHeight * perc)).toFixed(2) + ' '
           points += point
         }
-        points += '100,' + this.chart.height
+        points += '100,' + fixedHeight
         this.chart.points = points
       }
     },
     drawChart (index) {
       if (!this.game.game_over()) {
         let score = this.vscore
-        if (this.playerColor === 'white') {
+        if (this.playerColor === 'black') {
           score = 100 - score
         }
 

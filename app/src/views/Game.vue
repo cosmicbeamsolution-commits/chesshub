@@ -55,12 +55,12 @@
               <div class="columns has-text-centered">
                 <div class="column">
                   <div class="buttons levels has-addons" :title="'game_settings' | t">
-                    <button @click="gameFlip()" class="button is-info" title="Girar tablero">
+                    <button @click="gameFlip()" class="button" title="Girar tablero">
                       <span class="icon">
                         <span class="mdi mdi-flip-vertical"></span>
                       </span>
                     </button>
-                    <button @click="showPGN()" class="button is-info" v-if="pgnIndex.length" title="Mostrar PGN">
+                    <button @click="showPGN()" class="button" v-if="pgnIndex.length" title="Mostrar PGN">
                       <strong>PGN</strong>
                     </button>
                   </div>
@@ -135,11 +135,11 @@
                       <div class="moveCell moveSAN moveb" :class="{ 'moveRowOdd': move.odd, 'moveRowEven': !move.odd }">
                         <a v-if="move.black" :class="'moveindex m' + (move.i - 1)" @click="gamePos(move.i - 1)">
                           <span v-html="move.black"></span>
-                          <span v-if="data.annotations">
+                          <!--span v-if="data.annotations">
                             <span v-if="data.annotations[index * 2 + 1]" class="icon">
                               <span class="mdi" :class="{ 'mdi-sticker-plus' : data.annotations[index * 2 + 1] === '$1', 'mdi-sticker-check' : data.annotations[index * 2 + 1] === '$3', 'mdi-sticker-minus' : data.annotations[index * 2 + 1] === '$2', 'mdi-sticker-remove' : data.annotations[index * 2 + 1] === '$4', 'mdi-book-open': data.annotations[index * 2 + 1] === '$12', 'mdi-sticker-alert': data.annotations[index * 2 + 1] === '$14', 'mdi-sticker-emoji': data.annotations[index * 2 + 1] === '$15' }"></span>
                             </span>
-                          </span>
+                          </span-->
                           <span v-if="data.score">
                             <small v-if="data.score[index * 2 + 1]"> {{ data.score[index * 2 + 1] }}</small>
                           </span>
