@@ -126,17 +126,17 @@
     </div>
     <div class="animate fadeIn delay5">
       <div class="footprint">
-        <span v-show="idle > 1" class="is-size-7 has-text-weight-bold">
+        <span v-show="idle > 1" class="is-size-7">
           {{ 'idle_now' | t }} <span class="has-text-success">{{ idle }}</span>
         </span>
-        <span v-show="playing > 1" class="is-size-7 has-text-weight-bold">
+        <span v-show="playing > 1" class="is-size-7">
           {{ 'playing_now' | t }} <span class="has-text-success">{{ playing }}</span>
         </span>
-        <span v-show="latency" class="is-size-7 has-text-weight-bold">
+        <span v-show="latency" class="is-size-7">
           {{ 'latency' | t }} <span :class="{ 'has-text-danger': latency > 500, 'has-text-success': latency < 100 }">{{ latency }}</span>
         </span>
         <span v-show="!latency" class="is-size-7">...</span>
-        <span class="is-size-7 has-text-weight-bold">
+        <span class="is-size-7">
           <span class="icon is-small fa-2xs">
             <span class="fa fa-star"></span>
           </span>

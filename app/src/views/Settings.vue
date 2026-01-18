@@ -15,17 +15,18 @@
         </div>
         <div class="column">
           <form @submit.prevent="submit">
+            <label class="label">{{ 'settings' | t }}</label>
             <div class="field is-horizontal">
               <div class="field-body">
                 <div class="field">
-                  <label class="label">{{ 'username' | t }}</label>
+                  <label>{{ 'username' | t }}</label>
                   <input @input="checkUsername" type="text" v-model="data.code" class="input" maxlength="10" title="Ingresa tu nombre de usuario" required>
                 </div>
                 <span></span>
               </div>
               <div class="field-body">
                 <div class="field">
-                  <label class="label">{{ 'country' | t }}</label>
+                  <label>{{ 'country' | t }}</label>
                   <div class="select is-fullwidth">
                     <select v-model="data.flag" id="piezas" title="Elegí tu país">
                       <option v-for="(item, index) in flags" :key="index" :value="item.emoji">{{item.emoji}} {{item.name}}</option>
@@ -37,14 +38,14 @@
             <div class="field is-horizontal">
               <div class="field-body">
                 <div class="field">
-                  <label class="label">{{ 'name' | t }}</label>
+                  <label>{{ 'name' | t }}</label>
                   <input @input="checkName" :title="$root.t('name_title')" type="text" v-model="data.name" class="input" maxlength="10">
                 </div>
                 <span></span>
               </div>
               <div class="field-body">
                 <div class="field">
-                  <label class="label">{{ 'surname' | t }}</label>
+                  <label>{{ 'surname' | t }}</label>
                   <input @input="checkName" :title="$root.t('surname_title')" type="text" v-model="data.surname" class="input" maxlength="10" required>
                 </div>
               </div>
@@ -52,7 +53,7 @@
             <div class="field is-horizontal">
               <div class="field-body">
                 <div class="field">
-                  <label class="label">{{ 'language' | t }}</label>
+                  <label>{{ 'language' | t }}</label>
                   <div class="select is-fullwidth">
                     <select v-model="data.lang" id="piezas" title="Elegí tu país">
                       <option v-for="(item, index) in languages" :key="index" :value="item.code">{{item.name}}</option>
@@ -63,7 +64,7 @@
               </div>
               <div class="field-body">
                 <div class="field">
-                  <label class="label">{{ 'sound' | t }}</label>
+                  <label>{{ 'sound' | t }}</label>
                   <div class="select is-fullwidth">
                     <select v-model="data.soundTheme" id="piezas" title="Elegí un sonido">
                       <option v-for="(item, index) in sounds" :key="index" :value="item">{{ item | t }}</option>
@@ -75,7 +76,7 @@
             <div class="field is-horizontal">
               <div class="field-body">
                 <div class="field">
-                  <label class="label">{{ 'board_theme' | t }}</label>
+                  <label>{{ 'board_theme' | t }}</label>
                   <div class="select is-fullwidth">
                     <select v-model="data.board" id="tablero" :title="'board_theme_desc' | t">
                       <option v-for="(item, index) in boards" :key="index" :value="item">{{ item | t }}</option>
@@ -86,7 +87,7 @@
               </div>
               <div class="field-body">
                 <div class="field">
-                  <label class="label">{{ 'piece_theme' | t }}</label>
+                  <label>{{ 'piece_theme' | t }}</label>
                   <div class="select is-fullwidth">
                     <select v-model="data.pieces" id="piezas" title="Elegí estilo de piezas">
                       <option v-for="(item, index) in pieces" :key="index" :value="item">{{ item | t }}</option>
@@ -101,31 +102,31 @@
                 <div class="field-body">
                   <div class="control has-checkradio" title="Desactiva notificaciones sonoras">
                     <input v-model="data.sound" class="is-checkradio has-background-color is-white" id="sound" type="checkbox" @click="previewSound">
-                    <label class="label" for="sound">{{ 'sound' | t }}</label>
+                    <label for="sound">{{ 'sound' | t }}</label>
                   </div>
                 </div>
                 <div class="field-body">
                   <div class="control has-checkradio" :title="'huge_notifications' | t ">
                     <input v-model="data.strongnotification" class="is-checkradio has-background-color is-white" id="strongnotification" type="checkbox" @click="previewStrongNotification">
-                    <label class="label" for="strongnotification">{{ 'huge_notifications' | t }}</label>
+                    <label for="strongnotification">{{ 'huge_notifications' | t }}</label>
                   </div>
                 </div>
                 <div class="field-body">
                   <div class="control has-checkradio" :title="'slowpieceanim' | t">
                     <input v-model="data.slowpieceanim" class="is-checkradio has-background-color is-white" id="slowpieceanim" type="checkbox" @click="previewslowpieceanim">
-                    <label class="label" for="slowpieceanim">{{ 'slowpieceanim' | t }}</label>
+                    <label for="slowpieceanim">{{ 'slowpieceanim' | t }}</label>
                   </div>
                 </div>
                 <div class="field-body">
                   <div class="control has-checkradio" title="Activa visión nocturna">
                     <input v-model="data.darkmode" class="is-checkradio has-background-color is-white" id="darkmode" type="checkbox" @click="previewDarkmode">
-                    <label class="label" for="darkmode">{{ 'dark_mode' | t }}</label>
+                    <label for="darkmode">{{ 'dark_mode' | t }}</label>
                   </div>
                 </div>
                 <div class="field-body">
                   <div class="control has-checkradio" title="No disponible para jugar en línea">
                     <input v-model="data.observe" class="is-checkradio has-background-color is-white" id="observe" type="checkbox">
-                    <label class="label" for="observe">{{ 'observer_mode' | t }}</label>
+                    <label for="observe">{{ 'observer_mode' | t }}</label>
                     <!--p class="notification is-warning">
                       <small>No disponible para jugar en línea</small>
                     </p-->
@@ -134,7 +135,7 @@
                 <div class="field-body">
                   <div class="control has-checkradio" title="Aceptar invitaciones de otros grupos">
                     <input v-model="data.autoaccept" class="is-checkradio has-background-color is-white" id="autoaccept" type="checkbox">
-                    <label class="label" for="autoaccept">{{ 'accept_random' | t }}</label>
+                    <label for="autoaccept">{{ 'accept_random' | t }}</label>
                     <!--p class="notification is-warning">
                       <small>Aceptar automáticamente todas las invitaciones para jugar</small>
                     </p-->
