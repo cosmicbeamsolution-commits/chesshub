@@ -22,21 +22,16 @@
     <div v-show="data.owner" class="column fadeIn w-100">
       <div class="columns">
         <div v-if="players && data && data.owner" class="column is-lobby-list is-3">
-          <div v-if="data.owner._id === player._id">
-            <h3 class="is-clickable" @click="setGroupRules" title="Configurar Grupo">
-              <span class="icon">
-                <span class="mdi mdi-layers"></span>
-              </span>
-              <span>{{ data.code }}</span>
-            </h3>
-          </div>
-          <div v-else>
+          <div v-if="data.owner" class="box content">
             <h3>
               <span class="icon">
                 <span class="mdi mdi-layers"></span>
               </span>
-              <span>{{ data.code }}</span>
+              <span v-if="data.owner._id === player._id" @click="setGroupRules" title="Configurar Grupo" class="is-clickable"> {{ data.code }}</span>
+              <span v-else> {{ data.code }}</span>
             </h3>
+            <span class="d-block"><i class="mdi mdi-account"/> {{ data.owner.code }}</span>
+            <span class="d-block"><i class="mdi mdi-calendar"/> {{ data.date }}</span>
           </div>
           <div>
             <div v-for="(item, index) in players" :key="index">
@@ -572,7 +567,7 @@ export default {
   </div>
 </div>`)
       swal({
-        title: `${this.data.code}`,
+        title: `${this.$root.t('edit')} ${this.data.code}`,
         buttons: [this.$root.t('cancel'), this.$root.t('update')],
         className: 'is-wide',
         closeOnClickOutside: false,
