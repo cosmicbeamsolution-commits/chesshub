@@ -45,13 +45,15 @@ html, body {
   .textarea, 
   .input,
   .box {
-    &:not([class*="has-background-"]) {
-      background-color: #444!important;
-      border-color: #666!important;
-      color: #f8f8f8;
-      &:hover {
-        color: #888!important;
+    &:not(.bg-transparent) {
+      &:not([class*="has-background-"]) {
+        background-color: #444!important;
+        border-color: #666!important;
       }
+    }
+    color: #f8f8f8;
+    &:hover {
+      color: #888!important;
     }
   }
   .table.is-striped tbody tr:not(.is-selected):nth-child(even)  {
