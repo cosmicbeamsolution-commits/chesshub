@@ -32,6 +32,8 @@
             </h3>
             <span class="d-block"><i class="mdi mdi-account"/> {{ data.owner.code }}</span>
             <span class="d-block"><i class="mdi mdi-calendar"/> {{ data.date }}</span>
+            <span class="d-block"><i class="mdi mdi-clock-fast"/> {{ data.minutes }}'+{{ data.compensation }}</span>
+            <span class="d-block"><i class="mdi mdi-twitter-retweet"/> {{ data.games }}</span>
           </div>
           <div>
             <div v-for="(item, index) in players" :key="index">
@@ -484,25 +486,25 @@ export default {
     setGroupRules () {
       const template = (`
 <div class="content">
-  <div class="columns is-group-edit is-flex flex-md-col has-text-centered">
+  <div class="columns is-group-edit has-text-left">
     <div class="column">
-      <h4>
+      <label>
         <span class="icon">
           <span class="mdi mdi-pencil"></span>
         </span>
         <span>${this.$root.t('name')}</span>
-      </h4>
+      </label>
       <div class="field">
         <div class="control has-text-centered column">
           <input class="input groupcode" maxlength="15" value="${this.data.code}">
         </div>
       </div>
-      <h4>
+      <label>
         <span class="icon">
           <span class="mdi mdi-eye"></span>
         </span>
         <span>${this.$root.t('privacy')}</span>
-      </h4>
+      </label>
       <div class="field">
         <div class="control has-text-centered column">
           <div class="buttons levels has-addons groupprivacy">
@@ -513,12 +515,12 @@ export default {
       </div>
     </div>
     <div class="column">
-      <h4>
+      <label>
         <span class="icon">
           <span class="mdi mdi-twitter-retweet"></span>
         </span>
         <span>${this.$root.t('rounds')}</span>
-      </h4>
+      </label>
       <div class="field">
         <div class="control has-text-centered column">
           <div class="buttons levels has-addons groupgames">
@@ -530,12 +532,12 @@ export default {
           </div>
         </div>
       </div>
-      <h4>
+      <label>
         <span class="icon">
-          <span class="mdi mdi-clock"></span>
+          <span class="mdi mdi-timer"></span>
         </span>
         <span>${this.$root.t('minutes')}</span>
-      </h4>
+      </label>
       <div class="field">
         <div class="control has-text-centered column">
           <div class="buttons levels has-addons gameclock">
@@ -547,12 +549,12 @@ export default {
           </div>
         </div>
       </div>
-      <h4>
+      <label>
         <span class="icon">
-          <span class="mdi mdi-timer"></span>
+          <span class="mdi mdi-clock-fast"></span>
         </span>
         <span>${this.$root.t('compensation')}</span>
-      </h4>
+      </label>
       <div class="field">
         <div class="control has-text-centered column">
           <div class="buttons levels has-addons gamecompensation">

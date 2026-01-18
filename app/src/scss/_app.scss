@@ -45,11 +45,13 @@ html, body {
   .textarea, 
   .input,
   .box {
-    background-color: #444!important;
-    border-color: #666!important;
-    color: #f8f8f8;
-    &:hover {
-      color: #888!important;
+    &:not([class*="has-background-"]) {
+      background-color: #444!important;
+      border-color: #666!important;
+      color: #f8f8f8;
+      &:hover {
+        color: #888!important;
+      }
     }
   }
   .table.is-striped tbody tr:not(.is-selected):nth-child(even)  {
@@ -312,6 +314,9 @@ label {
 @media(max-width: 992px) {
   .flex-md-col {
     flex-direction: column;
+    .column {
+      padding: 0;
+    }
   }
 }
 
@@ -709,7 +714,7 @@ span {
   .is-group-edit {
     h4 {
       margin-top: 1.25rem;
-      margin-bottom: 0;
+      margin-bottom: 0.5rem;
     }
     .groupcode {
       max-width: 180px;
