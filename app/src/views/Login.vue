@@ -23,14 +23,14 @@
             </div>
             <div class="field">
               <div class="control has-text-centered">
-                <button type="submit" class="button w-100 is-link" :class="{'is-loading' : $root.processing}">{{ 'login' | t }}</button>
+                <button type="submit" class="button is-link w-100" :class="{'is-loading' : $root.processing}">{{ 'login' | t }}</button>
               </div>
             </div>
             <hr>
             <div class="field">
               <div class="control">
-                <router-link to="/forgot-password" class="button w-100 is-text">{{ 'forgot_password' | t }}</router-link>
-                <router-link to="/register" class="button w-100 is-text">{{ 'register' | t }}</router-link>
+                <router-link to="/forgot-password" class="button is-text w-100">{{ 'forgot_password' | t }}</router-link>
+                <router-link to="/register" class="button is-text w-100">{{ 'register' | t }}</router-link>
               </div>
             </div>
           </form>

@@ -84,13 +84,13 @@
           </div>
           <div class="column">
             <div class="has-text-centered">
-              <a v-show="player.email" @click="$root.createGroup" class="button is-rounded is-info" :class="{ 'is-loading': $root.isCreatingGroup }">
+              <a v-show="player.code" @click="$root.createGroup" class="button is-rounded is-info" :class="{ 'is-loading': $root.isCreatingGroup }">
                 <span class="icon">
                   <span class="mdi mdi-layers-plus"></span>
                 </span>
                 <span class="has-text-weight-bold">{{ 'create_group' | t }}</span>
               </a>
-              <div v-show="!player.email">
+              <div v-show="!player.code">
                 <div class="columns">
                   <div class="column">
                     <router-link to="/login" class="button is-rounded is-primary">

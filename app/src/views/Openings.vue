@@ -26,7 +26,7 @@
           </div>
         </div>
       </form>
-      <div v-show="Object.keys(data).length" class="has-text-left w-100">
+      <div v-show="Object.keys(data).length" class="has-text-left">
         <table class="table is-striped is-fullwidth">
           <thead>
             <th></th>

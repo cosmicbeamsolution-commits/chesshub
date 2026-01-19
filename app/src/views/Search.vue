@@ -10,7 +10,7 @@
       <form @submit.prevent="submit">
         <div class="field has-addons">
           <div class="control">
-            <input ref="input" @keyup="inputTrigger" v-model="pager.query" class="input is-success" type="text" placeholder="Evento, lugar, fecha, jugador o PGN" autofocus>
+            <input ref="input" @keyup="inputTrigger" v-model="pager.query" class="input" type="text" placeholder="Evento, lugar, fecha, jugador o PGN" autofocus>
           </div>
           <div class="control">
             <button v-show="this.searching" type="button" @click="clear" class="button is-danger">

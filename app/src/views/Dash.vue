@@ -1,6 +1,6 @@
 <template>
   <div class="container is-widescreen">
-    <div class="content column fadeIn">
+    <div class="content column fadeIn w-100">
       <h3>
         <span class="icon has-margin">
           <span class="mdi mdi-view-list"></span>
@@ -10,10 +10,10 @@
       <form @submit.prevent="submit">
         <div class="field has-addons">
           <div class="control">
-            <input ref="input" @keyup="inputTrigger" v-model="query" class="input is-success" type="text" placeholder="Evento, lugar, fecha, jugador o PGN" autofocus>
+            <input ref="input" @keyup="inputTrigger" v-model="query" class="input" type="text" placeholder="Evento, lugar, fecha, jugador o PGN" autofocus>
           </div>
           <div class="control">
-            <button v-show="this.searching" type="button" @click="clear" class="button is-danger">
+            <button v-show="this.searching" type="button" @click="clear" class="button">
               <span class="icon has-margin">
                 <span class="mdi mdi-close"></span>
               </span>
@@ -27,7 +27,7 @@
         </div>
       </form>
       <div v-if="data.count" class="has-text-left">
-        <table class="table is-narrow is-striped is-fullwidth">
+        <table class="table is-striped is-fullwidth">
           <thead>
             <th>Mesa</th>
             <th>Evento</th>
@@ -145,7 +145,15 @@ export default {
             for (var i = 0; i < numPages; i++) {
               pages[i] = i * this.limit
             }
-            Snackbar('success', t('results_found') + this.data.count + (this.data.count > 1 ? t('games') : t('game')) + '.' + t('showing_results') + (this.offset + 1) + t('of') + (this.offset + this.limit > this.data.count ? this.data.count : this.offset + this.limit), 5000)
+            Snackbar('success', [
+              t('results_found'),
+              this.data.count,
+              this.data.count > 1 ? t('games') : t('game'),
+              t('showing_results'),
+              this.offset + 1,
+              t('of'),
+              (this.offset + this.limit > this.data.count ? this.data.count : this.offset + this.limit)
+            ].join(' '), 5000)
           }
         }
 
