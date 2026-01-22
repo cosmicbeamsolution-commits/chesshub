@@ -8,6 +8,7 @@ import Search from '@/views/Search'
 import Play from '@/views/Play'
 import Live from '@/views/Live'
 import Dash from '@/views/Dash'
+import Chat from '@/views/Chat'
 import Settings from '@/views/Settings'
 import Stockfish from '@/views/Stockfish'
 import Exhibit from '@/views/Exhibit'
@@ -46,6 +47,7 @@ const router = new Router({
     { path: '/game/:game', name: 'Game', component: Game },
     { path: '/play/:game/:id?', name: 'Play', component: Play },
     { path: '/watch/:game', name: 'Watch', component: Watch },
+    { path: '/chat/:chat', name: 'Chat', component: Chat },
     { path: '/groups', name: 'Groups', component: Groups },
     { path: '/group/:group', name: 'Group', component: Group },
     { path: '/settings', name: 'Settings', component: Settings },

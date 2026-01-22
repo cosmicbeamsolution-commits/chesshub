@@ -10,10 +10,10 @@
               </span>
               <span>{{ 'login' | t }}</span>
             </h4>
-            <p>{{ 'login_text' | t }}</p>
+            <p>{{ 'login-text' | t }}</p>
             <div class="field">
               <div class="control">
-                <input v-model="data.email_or_username" class="input" type="email" :placeholder="'email_or_username' | t" required autofocus>
+                <input v-model="data.email_or_username" class="input" type="email" :placeholder="'email-or-username' | t" required autofocus>
               </div>
             </div>
             <div class="field">
@@ -29,7 +29,7 @@
             <hr>
             <div class="field">
               <div class="control">
-                <router-link to="/forgot-password" class="button is-text w-100">{{ 'forgot_password' | t }}</router-link>
+                <router-link to="/forgot-password" class="button is-text w-100">{{ 'forgot-password' | t }}</router-link>
                 <router-link to="/register" class="button is-text w-100">{{ 'register' | t }}</router-link>
               </div>
             </div>

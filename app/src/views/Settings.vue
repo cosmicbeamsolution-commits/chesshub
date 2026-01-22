@@ -39,14 +39,14 @@
               <div class="field-body">
                 <div class="field">
                   <label>{{ 'name' | t }}</label>
-                  <input @input="checkName" :title="$root.t('name_title')" type="text" v-model="data.name" class="input" maxlength="10">
+                  <input @input="checkName" :title="$root.t('your-name')" type="text" v-model="data.name" class="input" maxlength="10">
                 </div>
                 <span></span>
               </div>
               <div class="field-body">
                 <div class="field">
                   <label>{{ 'surname' | t }}</label>
-                  <input @input="checkName" :title="$root.t('surname_title')" type="text" v-model="data.surname" class="input" maxlength="10" required>
+                  <input @input="checkName" :title="$root.t('suryour-name')" type="text" v-model="data.surname" class="input" maxlength="10" required>
                 </div>
               </div>
             </div>
@@ -76,9 +76,9 @@
             <div class="field is-horizontal">
               <div class="field-body">
                 <div class="field">
-                  <label>{{ 'board_theme' | t }}</label>
+                  <label>{{ 'board-theme' | t }}</label>
                   <div class="select is-fullwidth">
-                    <select v-model="data.board" id="tablero" :title="'board_theme_desc' | t">
+                    <select v-model="data.board" id="tablero" :title="'board-theme-text' | t">
                       <option v-for="(item, index) in boards" :key="index" :value="item">{{ item | t }}</option>
                     </select>
                   </div>
@@ -87,7 +87,7 @@
               </div>
               <div class="field-body">
                 <div class="field">
-                  <label>{{ 'piece_theme' | t }}</label>
+                  <label>{{ 'piece-theme' | t }}</label>
                   <div class="select is-fullwidth">
                     <select v-model="data.pieces" id="piezas" title="Elegí estilo de piezas">
                       <option v-for="(item, index) in pieces" :key="index" :value="item">{{ item | t }}</option>
@@ -98,7 +98,7 @@
             </div>
             <div class="field">
               <div class="field-group">
-                <label class="label">{{ 'settings_general' | t }}</label>
+                <label class="label">{{ 'settings-general' | t }}</label>
                 <div class="field-body">
                   <div class="control has-checkradio" title="Desactiva notificaciones sonoras">
                     <input v-model="data.sound" class="is-checkradio has-background-color is-white" id="sound" type="checkbox" @click="previewSound">
@@ -106,9 +106,9 @@
                   </div>
                 </div>
                 <div class="field-body">
-                  <div class="control has-checkradio" :title="'huge_notifications' | t ">
+                  <div class="control has-checkradio" :title="'huge-notifications' | t ">
                     <input v-model="data.strongnotification" class="is-checkradio has-background-color is-white" id="strongnotification" type="checkbox" @click="previewStrongNotification">
-                    <label for="strongnotification">{{ 'huge_notifications' | t }}</label>
+                    <label for="strongnotification">{{ 'huge-notifications' | t }}</label>
                   </div>
                 </div>
                 <div class="field-body">
@@ -120,7 +120,7 @@
                 <div class="field-body">
                   <div class="control has-checkradio" title="Activa visión nocturna">
                     <input v-model="data.darkmode" class="is-checkradio has-background-color is-white" id="darkmode" type="checkbox" @click="previewDarkmode">
-                    <label for="darkmode">{{ 'dark_mode' | t }}</label>
+                    <label for="darkmode">{{ 'dark-mode' | t }}</label>
                   </div>
                 </div>
                 <div class="field-body">
@@ -135,7 +135,7 @@
                 <div class="field-body">
                   <div class="control has-checkradio" title="Aceptar invitaciones de otros grupos">
                     <input v-model="data.autoaccept" class="is-checkradio has-background-color is-white" id="autoaccept" type="checkbox">
-                    <label for="autoaccept">{{ 'accept_random' | t }}</label>
+                    <label for="autoaccept">{{ 'accept-random' | t }}</label>
                     <!--p class="notification is-warning">
                       <small>Aceptar automáticamente todas las invitaciones para jugar</small>
                     </p-->
@@ -220,13 +220,13 @@ export default {
   methods: {
     checkUsername ({ type, target }) {
       if (target.value.match(/^[a-zA-Z0-9]+$/) === null) {
-        Snackbar('error', this.$root.t('username_regex'))
+        Snackbar('error', this.$root.t('regex-username'))
         this.data.code = this.data.code.replace(/[\W_]+/g, ' ')
       }
     },
     checkName ({ type, target }) {
       if (target.value.match(/^[a-zA-Z0-9]+$/) === null) {
-        Snackbar('error', this.$root.t('name_regex'))
+        Snackbar('error', this.$root.t('regex-name'))
         this.data.code = this.data.code.replace(/[\W_]+/g, ' ')
       }
     },
@@ -262,9 +262,9 @@ export default {
     previewSound () {
       setTimeout(() => {
         if (this.data.sound) {
-          Snackbar('success', `🔊 ${this.$root.t('sound_on')}`)
+          Snackbar('success', `🔊 ${this.$root.t('sound-on')}`)
         } else {
-          Snackbar('default', `🔇 ${this.$root.t('sound_off')}`)
+          Snackbar('default', `🔇 ${this.$root.t('sound-off')}`)
         }
       }, 100)
     },
@@ -275,10 +275,10 @@ export default {
       setTimeout(() => {
         if (this.data.strongnotification) {
           snackbarBar.classList.add('is-strong')
-          Snackbar('default', 'huge_notifications', 3000)
+          Snackbar('default', 'huge-notifications', 3000)
         } else {
           snackbarBar.classList.remove('is-strong')
-          Snackbar('default', 'normal_notifications', 3000)
+          Snackbar('default', 'normal-notifications', 3000)
         }
       }, 100)
     },
@@ -331,7 +331,7 @@ export default {
             this.anchor.code = data.code
             this.$root.saving = false
             this.$socket.emit('settings', data)
-            Snackbar('success', this.$root.t('settings_saved'))
+            Snackbar('success', this.$root.t('settings-saved'))
           })
         }).catch(err => {
           console.log(`Algo malo sucedió ` + err)
@@ -365,14 +365,14 @@ export default {
         'bit',
         'blue',
         'bubblegum',
-        'burled_wood',
-        'dark_wood',
+        'burled-wood',
+        'dark-wood',
         'dash',
         'fantasy',
         'glass',
         'graffiti',
         'green',
-        'green_plastic',
+        'green-plastic',
         'ocean',
         'lolz',
         'marble',

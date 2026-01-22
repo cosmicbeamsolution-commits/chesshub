@@ -11,23 +11,22 @@ let movecompensation = 2
 let io
 
 module.exports = (http, db) => {
-  io = socket(http, { origins: '*:*', pingInterval: 15000})
+  io = socket(http, { origins: '*:*', pingInterval: 15000 })
   io.on('connection', function(socket){ //join group on connect
   	socket.on('disconnect',  (data) => {
 	    for (var i in groups) {
 	      if (Object.keys(groups[i].players).length) {
 	        Object.keys(groups[i].players).map(j => {
 	          let e = groups[i].players[j]
-	          if(e.socket === socket.id){
+	          if(e?.socket === socket?.id){
 	            console.log(`${e.code} leaves group: ${groups[i].code}`)
 	            delete groups[i].players[j]
+
 	            db.collection('groups').findOneAndUpdate(
-	            {
-	              '_id': new ObjectId(i)
-	            },
-	            {
-	              "$set": { users: Object.keys(groups[i].players).length }
-	            })
+                { '_id': new ObjectId(i) },
+                { "$set": { users: Object.keys(groups[i].players).length }}
+              )
+
 	            io.to(i).emit('players', groups[i].players)
 	          }
 	        })
@@ -120,6 +119,7 @@ module.exports = (http, db) => {
 
       io.to(id).emit('group_chat', data)
     })
+
 
     socket.on('preferences', function(data) {
       var exists = false
@@ -254,20 +254,18 @@ module.exports = (http, db) => {
 
     socket.on('group_join', (data) => {
 	    if (!Object.keys(data.group).length) return false
-	    
 	    // console.log('group_join(group)',data.group)
 	    let id = data.group._id
 	    
 	    if (!groups[id]) {
 	      groups[id] = data.group
-        console.log('creating players in ', id)
 	      groups[id].players = {}
 	    }
 
 	    if(!groups[id].players[data.player._id]) {
 	      data.player.socket = socket.id
 	      groups[id].players[data.player._id] = data.player
-        console.log('setting player ', data.player._id)
+        // console.log('setting player ', data.player._id)
 	      console.log(`${data.player.code} joins ${groups[id].code}`)
 	    }
 
@@ -279,13 +277,40 @@ module.exports = (http, db) => {
 
 	    io.emit('playing', module.exports.playing)
 
-	    return db.collection('groups').findOneAndUpdate(
-	    {
-	      '_id': new ObjectId(id)
-	    },
-	    {
-	      "$set": { users: Object.keys(groups[id].players).length }
-	    })		
+      const updated = db.collection('groups').findOneAndUpdate(
+      {
+        '_id': new ObjectId(id)
+      },
+      {
+        "$set": { users: Object.keys(groups[id].players).length }
+      })
+
+      console.log('users(join)', Object.keys(groups[id].players).length)
+
+      db.collection('groups').find({
+        broadcast: true
+      })
+      .sort({ players: -1 })
+      .limit(20)
+      .toArray(function(err, data){
+        const groups = data.map((e) => {
+          return {
+            _id: e._id,
+            code: e.code,
+            text: e.text,
+            users: e.users,
+            games: e.games,
+            minutes: e.minutes,
+            compensation: e.compensation,
+            date: e.date
+          }
+        })
+
+        console.log('groups', groups)
+        io.emit('groups', groups)
+      })
+
+	    return updated		
 		})
 
     socket.on('group_leave', (data) => {
@@ -294,25 +319,96 @@ module.exports = (http, db) => {
 	    if (groups[id]) {
 	      if (groups[id].players[data.player._id]) {
 	        io.to(id).emit("group_leave", data.player)
+          // console.log('group_leave', data)
           console.log('group leave ', data.player._id)
-	        // delete groups[id].players[data.player._id]
+          delete groups[id].players[data.player._id]
 	        console.log(`${data.player.code} leaves ${groups[id].code}`)
 	      }
 
 	      io.to(id).emit('players', groups[id].players)
-
 	      io.emit('playing', module.exports.playing)
 
-	      return db.collection('groups').findOneAndUpdate(
+	      const update = db.collection('groups').findOneAndUpdate(
 	      {
 	        '_id': new ObjectId(id)
 	      },
 	      {
 	        "$set": { users: Object.keys(groups[id].players).length }
 	      })
+
+        console.log('users(leave)', Object.keys(groups[id].players).length)
+
+        db.collection('groups').find({
+          broadcast: true
+        })
+        .sort({ players: -1 })
+        .limit(20)
+        .toArray(function(err, data){
+          const groups = data.map((e) => {
+            return {
+              _id: e._id,
+              code: e.code,
+              text: e.text,
+              users: e.users,
+              games: e.games,
+              minutes: e.minutes,
+              compensation: e.compensation,
+              date: e.date
+            }
+          })
+
+          console.log('groups', groups)
+          io.emit('groups', groups)
+        })
+
+        return update 
 	    }		
 		})
 
+    socket.on('private_join', (data) => {
+      // console.log('group_join(chat)',data.chat)
+      let id = data.chat.chat
+      socket.join(id)
+      io.to(id).emit("private_join", data.player)
+      // return updated
+    })
+
+    socket.on('private_leave', (data) => {
+      const id = data.chat?.chat || false
+      if(!id) return false
+      io.to(id).emit("private_leave", data.player)
+      console.log('private_leave', data.player.code)
+    })
+
+    socket.on('private_chat', function(data) { //move object emitter
+      if(!data.line) return false
+      let id = data.chat
+      data.line.created = new Date()
+
+      if (data.sender !== 'bot') {
+        let $push_lines = []
+        $push_lines.push(data.line)
+        // console.log('data:', data)
+
+        db.collection('chats').findOneAndUpdate(
+          { 
+            chat: data.chat 
+          },
+          { 
+            "$set": { chat: data.chat },
+            "$push": { "lines": { "$each" : $push_lines } }
+          }, { 
+            upsert: true, 
+            'new': true, 
+            returnOriginal:false 
+          }
+        )
+      }
+
+      io.to(id).emit('private_chat', data)
+    })
+
+    /* action wildcard */
     socket.on('action',  (data) => {
 			console.log('action', data.action, data.id)
 			io.to(data.id).emit(data.action, data)
@@ -409,7 +505,7 @@ module.exports = (http, db) => {
         }
       }
 
-      console.log('game', data)
+      // console.log('game', data)
       return db.collection('games').findOneAndUpdate(
       {
         '_id': new ObjectId(id)
@@ -486,7 +582,7 @@ module.exports = (http, db) => {
       var id = data._id
       data.updatedAt = moment().utc().format()      
       delete data._id
-      console.log('group', id, data)
+      // console.log('group', id, data)
       return db.collection('groups').findOneAndUpdate(
       {
         '_id': new ObjectId(id)
@@ -497,7 +593,7 @@ module.exports = (http, db) => {
         'new': true, 
         returnOriginal:false 
       }).then(function(doc){
-        console.log('doc',doc.value)
+        // console.log('doc',doc.value)
         io.to(id).emit('group_updated', doc.value)
       })
     })

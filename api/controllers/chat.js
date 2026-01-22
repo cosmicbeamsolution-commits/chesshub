@@ -1,0 +1,84 @@
+const path = require("path")
+const bson = require('bson')
+const jwt = require('jsonwebtoken')
+const moment = require('moment')
+const emailHelper = require('../email/helper')
+const emailClient = emailHelper()
+const bcrypt = require('bcrypt')
+const tokenExpires = 86400 * 30 * 12 // 1 year
+const saltRounds = 10
+var ObjectId = require('mongodb').ObjectId
+
+module.exports = {
+  random: (req, res) => {
+    req.app.db.collection('chats').aggregate([
+      { "$match" : { "broadcast": true } },
+      { "$project" : { code: 1, games: 1, minutes: 1, compensation: 1, users: 1 } },
+      {
+        "$redact": {
+            "$cond": [
+                { 
+                  "$lt": [ { "$strLenCP": "code" }, 20]
+                },
+                "$$KEEP",
+                "$$PRUNE"
+            ]
+        }
+      },
+      { $sample: { size: 9 } }
+      ]).toArray(function(err,docs) {
+        if (docs) {
+          return res.json({ status: 'success', data: docs })
+        } else {
+          return res.json({ status: 'error' })
+        }
+    })
+  },  
+  get: (req, res) => {
+    let dateLimit = moment().subtract(1, 'year')
+    req.app.db.collection('chats').find({
+      chat: req.body.chat,
+    }).limit(100).toArray(function(err,docs){
+      var data = {}
+      if(docs[0]){
+        data = docs[0]
+        data.lines = data.lines 
+          ? data.lines.filter(e => moment(e.created).format('x') > dateLimit) 
+          : []
+      }
+      return res.json(data)
+    })    
+  },
+  update: (req, res) => {
+    var id = req.body.id
+    var $set = {}
+    for(var i in req.body){
+      $set[i] = req.body[i]
+    }
+
+    $set.updatedAt = moment().utc().format()      
+    delete $set.id 
+
+    return req.app.db.collection('chats').findOneAndUpdate(
+    {
+      '_id': new ObjectId(id)
+    },
+    {
+      "$set": $set
+    },{ new: true }).then(function(doc){
+      return res.json({ status: 'success', data: doc.value})
+      //io.emit('group_changed', match)
+    })    
+  },
+  create: (req, res) => {
+    if(!req.body) return res.json({ status: 'error', message: 'Could not create group'})
+    req.app.db.collection('chats').insertOne(req.body,function (err, response) {
+      if(err){ 
+        console.log(err)
+        return res.json({ status: 'error', message: 'Error: ' + err})
+      } else {
+        return res.json({ status: 'success', data: response.ops[0]})
+      }
+    })
+  }
+}

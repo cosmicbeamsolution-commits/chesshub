@@ -18,27 +18,27 @@
             <div class="control has-text-centered column">
               <div class="buttons levels has-addons">
                 <!--button class="button is-success" @click="gameStart(0)">
-                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level_0' | t }}</span>
+                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-0' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">0</span>
                 </button>
                 <button class="button is-success" @click="gameStart(4)">
-                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level_1' | t }}</span>
+                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-1' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">1</span>
                 </button>
                 <button class="button is-info" @click="gameStart(8)">
-                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level_2' | t }}</span>
+                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-2' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">2</span>
                 </button-->
                 <button class="button is-info" @click="gameStart(12)">
-                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level_3' | t }}</span>
+                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-3' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">3</span>
                 </button>
                 <button class="button is-warning" @click="gameStart(16)">
-                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level_4' | t }}</span>
+                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-4' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">4</span>
                 </button>
                 <button class="button is-danger" @click="gameStart(20)">
-                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level_5' | t }}</span>
+                  <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-5' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">5</span>
                 </button>
               </div>
@@ -83,7 +83,7 @@
           </div>
           <div class="columns has-text-centered" v-show="pgnIndex.length">
             <div class="column">
-              <div class="buttons levels has-addons" :title="'stockfish_options' | t">
+              <div class="buttons levels has-addons" :title="'stockfish-options' | t">
                 <!--button @click="undo()" class="button is-warning" v-if="index > 2 && !announced_game_over">
                   <span class="icon has-text-white">
                     <span class="mdi mdi-undo-variant"></span>
@@ -245,8 +245,8 @@ export default {
       PlaySound('lose.mp3')
       var t = this
       swal({
-        title: this.$root.t('restart_match'),
-        text: this.$root.t('restart_match_ask'),
+        title: this.$root.t('restart-match'),
+        text: this.$root.t('restart-match-ask'),
         buttons: [this.$root.t('no'), this.$root.t('yes')]
       }).then(accept => {
         if (accept) {
@@ -388,7 +388,7 @@ export default {
       const pref = JSON.parse(localStorage.getItem('player')) || {}
 
       this.currentLevel = level
-      this.opponentName = `Stockfish ${this.$root.t('level_' + Math.floor(level / 4))}`
+      this.opponentName = `Stockfish ${this.$root.t('level-' + Math.floor(level / 4))}`
       this.engine = typeof STOCKFISH === 'function' ? STOCKFISH() : new Worker('/js/stockfish.js')
       this.engineStatus = {}
 
@@ -745,8 +745,8 @@ export default {
       if (t.game.game_over()) {
         if (t.game.in_draw() || t.game.in_stalemate() || t.game.in_threefold_repetition()) {
           swal({
-            title: t.$root.t('stockfish_ask_rematch'),
-            text: t.$root.t('game_draw'),
+            title: t.$root.t('stockfish-rematch-ask'),
+            text: t.$root.t('game-draw'),
             buttons: [t.$root.t('no'), t.$root.t('yes')]
           }).then(accept => {
             if (accept) {
@@ -759,8 +759,8 @@ export default {
           setTimeout(() => {
             if (t.game.turn() === t.playerColor[0]) {
               swal({
-                title: t.$root.t('stockfish_ask_rematch'),
-                text: t.$root.t('stockfish_won'),
+                title: t.$root.t('stockfish-rematch-ask'),
+                text: t.$root.t('stockfish-won'),
                 buttons: [t.$root.t('no'), t.$root.t('yes')]
               })
                 .then(accept => {
@@ -772,19 +772,19 @@ export default {
                 })
             } else {
               swal({
-                title: t.$root.t('you_defeat_stockfish'),
+                title: t.$root.t('you-defeat-stockfish'),
                 buttons: {
                   cancel: t.$root.t('cancel'),
                   catch: {
-                    text: t.$root.t('play_again'),
+                    text: t.$root.t('play-again'),
                     value: 'catch'
                   },
-                  defeat: t.$root.t('save_game')
+                  defeat: t.$root.t('save-game')
                 }
               }).then((value) => {
                 switch (value) {
                   case 'defeat':
-                    let event = [this.$root.t('play_against'), 'Stockfish'].join(' ')
+                    let event = [this.$root.t('play-against'), 'Stockfish'].join(' ')
                     let opponent = this.opponentName
                     let white = this.playerColor === 'white' ? this.player.code : opponent
                     let black = this.playerColor === 'black' ? this.player.code : opponent
@@ -811,7 +811,7 @@ export default {
                     axios.post('/game/save', game).then((res) => {
                       if (res.data.status === 'success') {
                         this.$store.dispatch('games', res.data)
-                        swal(this.$root.t('saved'), this.$root.t('stockfish_saved'))
+                        swal(this.$root.t('saved'), this.$root.t('stockfish-saved'))
                       } else {
                         Snackbar('danger', 'La partida no pudo ser guardada')
                       }

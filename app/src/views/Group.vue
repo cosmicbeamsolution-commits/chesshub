@@ -1,7 +1,7 @@
 <template>
   <div class="container is-widescreen">
     <div v-if="!data">
-      <span>{{ 'group_not_found' | t }}</span>
+      <span>{{ 'group-not-found' | t }}</span>
     </div>
     <div else v-show="!data.owner && tried" class="content column fadeIn w-100">
       <section class="hero fadeIn">
@@ -11,33 +11,39 @@
               <span class="icon has-margin-right">
                 <span class="mdi mdi-robot"></span>
               </span>
-              <span>{{ 'group_not_found' | t }}</span>
+              <span>{{ 'group-not-found' | t }}</span>
             </h1>
-            <p v-if="player.email">{{ 'create_group_invitation' | t }} <a @click="$root.createGroup">{{ 'create_it' | t }}</a></p>
-            <p v-else><span v-html="$root.t('group_not_found_text', { q: $route.params.group })"/></p>
+            <p v-if="player.email">{{ 'create-group-invitation' | t }} <a @click="$root.createGroup">{{ 'create-it' | t }}</a></p>
+            <p v-else><span v-html="$root.t('group-not-found-text', { q: $route.params.group })"/></p>
           </div>
         </div>
       </section>
     </div>
     <div v-show="data.owner" class="column fadeIn w-100">
       <div class="columns">
-        <div v-if="players && data && data.owner" class="column is-lobby-list is-3">
-          <div v-if="data.owner" class="box content">
+        <div v-if="players && data && data.owner" class="column content is-lobby-list is-3">
+          <div class="box" @click="checkGroupRules" :class="{ 'is-clickable': data.owner._id === player._id }">
             <h3>
               <span class="icon">
                 <span class="mdi mdi-layers"></span>
               </span>
-              <span v-if="data.owner._id === player._id" @click="setGroupRules" title="Configurar Grupo" class="is-clickable"> {{ data.code }}</span>
-              <span v-else> {{ data.code }}</span>
+              <span> {{ data.code }}</span>
             </h3>
-            <span class="d-block"><i class="mdi mdi-account"/> {{ data.owner.code }}</span>
-            <span class="d-block"><i class="mdi mdi-calendar"/> {{ data.date }}</span>
-            <span class="d-block"><i class="mdi mdi-clock-fast"/> {{ data.minutes }}'+{{ data.compensation }}</span>
-            <span class="d-block"><i class="mdi mdi-twitter-retweet"/> {{ data.games }}</span>
+            <div v-if="data.owner">
+              <span class="d-block"><i class="mdi mdi-information-variant"/> {{ data.text }}</span>
+              <span class="d-block"><i class="mdi mdi-account"/> {{ data.owner.code }}</span>
+              <span class="d-block"><i class="mdi mdi-calendar"/> {{ data.date }}</span>
+              <span class="d-block"><i class="mdi mdi-clock-fast"/> {{ data.minutes }}'+{{ data.compensation }}</span>
+              <span class="d-block"><i class="mdi mdi-twitter-retweet"/> {{ data.games }}</span>
+            </div>
           </div>
           <div>
             <div v-for="(item, index) in players" :key="index">
-              <router-link :to="`/search?q=${item.code}&strict=1`" :title="item.code">
+              <router-link :to="{
+                name: 'Chat',
+                params: {
+                  chat: $root.getPrivateRoom(item._id)
+                }}" :title="item.code">
                 <span v-if="item.code !== player.code" class="mini-button has-background-light" :class="{ 'opacity75': item.code === player.code }">
                   <span class="icon">
                     <span v-html="item.flag"></span>
@@ -73,10 +79,10 @@
                 </a>
               </li>
               <li v-show="games.length" :class="{ 'is-active' : tab === 'playing' }">
-                <a @click="setTab('playing')" :title="'playing_now' | t" class="has-background-light gap-11">
+                <a @click="setTab('playing')" :title="'playing-now' | t" class="has-background-light gap-11">
                   <span class="icon is-marginless">
                     <i class="mdi mdi-chess-king is-size-4" aria-hidden="true"></i>
-                  </span> {{ 'playing_now' | t }}
+                  </span> {{ 'playing-now' | t }}
                 </a>
               </li>
             </ul>
@@ -156,7 +162,7 @@
               <form @submit.prevent="sendChat">
                 <div class="field is-fullwidth has-addons has-addons-fullwidth is-marginless">
                   <div class="control">
-                    <input class="input" v-model="chat" type="text" :placeholder="'type_your_message' | t" />
+                    <input class="input" v-model="chat" type="text" :placeholder="'type-your-message' | t" />
                   </div>
                   <div class="control has-text-left">
                     <button type="submit" class="button is-info">
@@ -172,8 +178,8 @@
           <div v-show="tab === 'results'" class="fadeIn min-20">
             <div class="column">
               <div v-if="!data.results.length" class="column">
-                <!--span>{{ 'group_not_found_text' | t }}</span-->
-                <span v-html="$root.t('group_no_results', { q: data.code })"></span>
+                <!--span>{{ 'group-not-found-text' | t }}</span-->
+                <span v-html="$root.t('group-no-results', { q: data.code })"></span>
               </div>
               <div class="columns is-multiline">
                 <div class="column is-12-mobile is-6-tablet is-6-desktop is-4-fullhd" v-for="(item, index) in data.results" :key="index">
@@ -181,7 +187,7 @@
                 </div>
               </div>
               <div v-if="showResultsAll" class="field column has-text-centered">
-                <span class="button is-success is-outlined">{{ 'show_all' | t }}</span>
+                <span class="button is-success is-outlined">{{ 'showall' | t }}</span>
               </div>
             </div>
           </div>
@@ -223,6 +229,7 @@ export default {
       chatlast: null,
       onlineGames: [],
       boardColor: null,
+      moduleIgnore: ['Play', 'Chat'],
       players: [],
       chatLines: []
     }
@@ -236,19 +243,18 @@ export default {
     this.loadGroup()
   },
   beforeDestroy () {
-    if (this.$route.name && this.$route.name !== 'play') {
+    if (!this.moduleIgnore.includes(this.$route?.name)) {
       this.$socket.emit('group_leave', this.group)
     }
   },
   sockets: {
     group_updated (data) {
-      console.log('group_updated', data)
       this.data = data
       if (data.owner._id === this.player._id) {
         swal.close()
       }
       this.chatLines.push({
-        text: `<span class="mdi mdi-cog"></span> ` + this.$root.t('group_updated'),
+        text: `<span class="mdi mdi-cog"></span> ` + this.$root.t('group-updated'),
         ts: moment().fromNow(true),
         sender: 'bot',
         owned: false
@@ -281,7 +287,7 @@ export default {
       }
     },
     players (data) {
-      if (this.$route.name === 'play') return
+      if (this.$route.name === 'Play') return
       this.players = data
       this.groupKey++
     },
@@ -311,7 +317,6 @@ export default {
     play (data) {
       if (data.asker === this.player.code) {
         this.$store.dispatch('games', data)
-        console.log('invite(2)', data.id)
         this.$router.push({
           name: 'Play',
           params: {
@@ -320,13 +325,6 @@ export default {
           }
         })
         swal.close()
-        // `/play/${this.$route.params.group}/${data.id}`)
-        /* this.$router.push({
-          name: 'Play',
-          params: {
-            id: match.group,
-          }
-        }) */
       }
     },
     reject (data) {
@@ -483,6 +481,11 @@ export default {
         .catch(() => {
         })
     },
+    checkGroupRules () {
+      if (this.data.owner._id === this.player._id) {
+        this.setGroupRules()
+      }
+    },
     setGroupRules () {
       const template = (`
 <div class="content">
@@ -495,8 +498,19 @@ export default {
         <span>${this.$root.t('name')}</span>
       </label>
       <div class="field">
-        <div class="control has-text-centered column">
+        <div class="control column">
           <input class="input groupcode" maxlength="15" value="${this.data.code}">
+        </div>
+      </div>
+      <label>
+        <span class="icon">
+          <span class="mdi mdi-pencil"></span>
+        </span>
+        <span>${this.$root.t('text')}</span>
+      </label>
+      <div class="field">
+        <div class="control has-text-centered column">
+          <textarea class="textarea description" rows="5">${this.data.text}</textarea>
         </div>
       </div>
       <label>
@@ -572,7 +586,7 @@ export default {
         title: `${this.$root.t('edit')} ${this.data.code}`,
         buttons: [this.$root.t('cancel'), this.$root.t('update')],
         className: 'is-wide',
-        closeOnClickOutside: false,
+        // closeOnClickOutside: false,
         content: {
           element: 'div',
           attributes: {
@@ -586,10 +600,12 @@ export default {
           var gameclock = document.querySelector('.gameclock > .has-background-success')
           var groupgames = document.querySelector('.groupgames > .has-background-success')
           var gamecompensation = document.querySelector('.gamecompensation > .has-background-success')
+          var description = document.querySelector('.description')
           var minutes = parseInt(gameclock?.textContent)
           var games = parseInt(groupgames?.textContent)
           var compensation = parseInt(gamecompensation?.textContent)
           var code = groupcode?.value || ''
+          var text = description?.value || ''
           var broadcast = groupprivacy?.textContent.toLowerCase() !== 'privado'
 
           swal({
@@ -605,6 +621,7 @@ export default {
               games: games,
               broadcast: broadcast,
               code: code,
+              text: text,
               compensation: compensation
             }
 

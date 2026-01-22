@@ -17,13 +17,13 @@ module.exports = {
       $find = {"code" : { '$regex' : query, '$options' : 'i'}}
     }
 
-    req.app.db.collection('groups').countDocuments($find, function(error, numOfDocs){
+    req.app.db.collection('groups').countDocuments($find, function(error, count){
       req.app.db.collection('groups').find($find)
         .sort({_id:-1})
         .limit(limit)
         .skip(offset)
-        .toArray(function(err,docs){
-          return res.json({data: docs, count:numOfDocs})
+        .toArray(function(err,data){
+          return res.json({data, count})
         })
     })
   },

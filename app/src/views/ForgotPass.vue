@@ -8,17 +8,17 @@
               <span class="icon">
                 <span class="mdi mdi-account-lock"></span>
               </span>
-              <span>{{ 'forgot_password' | t }}</span>
+              <span>{{ 'forgot-password' | t }}</span>
             </h4>
             <p>{{ 'forgot_text' | t }}</p>
             <div class="field">
               <div class="control">
-                <input v-model="data.email_or_username" class="input" type="text" :placeholder="'email_or_username' | t" required autofocus>
+                <input v-model="data.email_or_username" class="input" type="text" :placeholder="'email-or-username' | t" required autofocus>
               </div>
             </div>
             <div class="field">
               <div class="control has-text-centered">
-                <button type="submit" class="button w-100 is-link" :class="{'is-loading' : $root.processing}">{{ 'recover_password' | t }}</button>
+                <button type="submit" class="button w-100 is-link" :class="{'is-loading' : $root.processing}">{{ 'recover-password' | t }}</button>
               </div>
             </div>
             <hr>

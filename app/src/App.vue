@@ -21,7 +21,7 @@
                 <router-link to="/settings" class="button is-rounded bg-gradient is-grey" :title="'set_your_settings' | t">
                   <span class="has-text-weight-bold">{{ player.code }}</span>
                 </router-link>
-                <a @click="$root.play" class="button is-rounded is-success min-3" :class="{ 'is-loading': $root.isFindingOpponent }" :title="'search_opponent' | t">
+                <a @click="$root.play" class="button is-rounded is-success min-3" :class="{ 'is-loading': $root.isFindingOpponent }" :title="'search-opponent' | t">
                   <span class="icon has-text-white">
                     <span class="fa fa-handshake"></span>
                   </span>
@@ -45,6 +45,7 @@
             <span class="icon has-text-white">
               <span class="fa fa-handshake"></span>
             </span>
+            <span v-if="player.code">{{ player.code }}</span>
           </a>
           <div class="menu-sm-hide-area">
             <router-link to="/settings" :title="'set_your_settings' | t">
@@ -52,7 +53,7 @@
                 <i class="mdi mdi-settings is-size-4"></i>
               </span>
             </router-link>
-            <span @click="saveSound" class="button is-small is-borderless bg-transparent" :title="$root.t('audio') + ' ' + $root.t('status_' + (player.sound ? 'on' : 'off'))">
+            <span @click="saveSound" class="button is-small is-borderless bg-transparent" :title="$root.t('audio') + ' ' + $root.t('status-' + (player.sound ? 'on' : 'off'))">
               <i class="mdi is-size-4" :class="{
                 'mdi-headphones': player.sound,
                 'mdi-headphones-off has-text-grey': !player.sound,
@@ -88,7 +89,7 @@
                 <span class="icon">
                   <span class="mdi mdi-layers-plus"></span>
                 </span>
-                <span class="has-text-weight-bold">{{ 'create_group' | t }}</span>
+                <span class="has-text-weight-bold">{{ 'create-group' | t }}</span>
               </a>
               <div v-show="!player.code">
                 <div class="columns">
@@ -127,10 +128,10 @@
     <div class="animate fadeIn delay5">
       <div class="footprint">
         <span v-show="idle > 1" class="is-size-7">
-          {{ 'idle_now' | t }} <span class="has-text-success">{{ idle }}</span>
+          {{ 'idle-now' | t }} <span class="has-text-success">{{ idle }}</span>
         </span>
         <span v-show="playing > 1" class="is-size-7">
-          {{ 'playing_now' | t }} <span class="has-text-success">{{ playing }}</span>
+          {{ 'playing-now' | t }} <span class="has-text-success">{{ playing }}</span>
         </span>
         <span v-show="latency" class="is-size-7">
           {{ 'latency' | t }} <span :class="{ 'has-text-danger': latency > 500, 'has-text-success': latency < 100 }">{{ latency }}</span>
@@ -141,7 +142,7 @@
             <span class="fa fa-star"></span>
           </span>
           <span>
-            {{ 'powered_by' | t }} <a href="https://github.com/nmrugg/stockfish.js/" class="has-text-info" target="_blank">Stockfish</a>
+            {{ 'powered-by' | t }} <a href="https://github.com/nmrugg/stockfish.js/" class="has-text-info" target="_blank">Stockfish</a>
           </span>
         </span>
       </div>
@@ -219,8 +220,8 @@ export default {
       this.$root.isFindingOpponent = false
       PlaySound('win.mp3')
       swal({
-        title: this.$root.t('opponent_not_found'),
-        text: this.$root.t('opponent_not_found_text', { date: new Date() }),
+        title: this.$root.t('opponent-not-found'),
+        text: this.$root.t('opponent-not-found-text', { date: new Date() }),
         buttons: [this.$root.t('no'), this.$root.t('yes')]
       }).then(accept => {
         if (accept) {
@@ -269,9 +270,9 @@ export default {
     previewSound () {
       setTimeout(() => {
         if (this.player.sound) {
-          Snackbar('success', `🔊 ${this.$root.t('sound_on')}`)
+          Snackbar('success', `🔊 ${this.$root.t('sound-on')}`)
         } else {
-          Snackbar('default', `🔇 ${this.$root.t('sound_off')}`)
+          Snackbar('default', `🔇 ${this.$root.t('sound-off')}`)
         }
       }, 100)
     },

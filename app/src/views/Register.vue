@@ -5,7 +5,7 @@
         <span class="icon">
           <span class="mdi mdi-information-variant has-text-info"></span>
         </span>
-        <span>{{ 'already_loggedin' | t }} {{ player.code }}</span>
+        <span>{{ 'already-logged-in' | t }} {{ player.code }}</span>
       </p>
     </section>
     <section v-show="!player.email" class="content column fadeIn">
@@ -18,7 +18,7 @@
               </span>
               <span>{{ 'register' | t }}</span>
             </h4>
-            <p>{{ 'register_text' | t }}</p>
+            <p>{{ 'register-text' | t }}</p>
             <div class="field">
               <div class="control">
                 <input @input="checkUsername" v-model="data.code" class="input" type="text" :placeholder="'username' | t" required autofocus>
@@ -37,7 +37,7 @@
             <div class="field">
               <div class="control">
                 <label class="checkbox">
-                  <input type="checkbox" v-model="acceptTerms"> <span v-html="$root.t('accept_terms')"></span>
+                  <input type="checkbox" v-model="acceptTerms"> <span v-html="$root.t('accept-terms')"></span>
                 </label>
               </div>
             </div>
@@ -53,7 +53,7 @@
                   {{ 'login' | t }}
                 </router-link>
                 <router-link to="/forgot-password" class="button w-100 is-text">
-                  {{ 'forgot_password' | t }}
+                  {{ 'forgot-password' | t }}
                 </router-link>
               </div>
             </div>
@@ -88,7 +88,7 @@ export default {
   methods: {
     checkUsername ({ type, target }) {
       if (target.value.match(/^[a-zA-Z0-9]+$/) === null) {
-        Snackbar('error', this.$root.t('username_regex'))
+        Snackbar('error', this.$root.t('regex-username'))
         this.data.code = this.data.code.replace(/[\W_]+/g, ' ')
       }
     },

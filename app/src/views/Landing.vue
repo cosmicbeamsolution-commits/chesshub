@@ -1,12 +1,12 @@
 <template>
-  <div class="container is-widescreen landing">
-    <div class="columns is-vcentered has-padding-bottom z-index-1 fadeIn">
-      <div class="column is-12 has-text-centered">
-        <div class="has-text-centered has-padding-bottom">
-          <form id="search" class="has-text-centered animated fadeIn delay slow" @submit.prevent="submit">
-            <div class="field has-addons is-flex-centered">
+  <div class="landing container is-widescreen">
+    <div class="content column fadeIn w-100">
+      <section class="hero fadeIn delay slow">
+        <div class="container is-flex-centered flex-column gap-1">
+          <form id="search" class="has-text-centered animated" @submit.prevent="submit">
+            <div class="field has-addons is-flex-centered marginless">
               <div class="control">
-                <input v-model="query" class="input" name="query" type="text" :placeholder="'search_in_groups' | t" autofocus>
+                <input v-model="query" class="input" name="query" type="text" :placeholder="'search-in-groups' | t" autofocus>
               </div>
               <div class="control">
                 <button type="submit" id="searchbtn" class="button is-success">
@@ -17,7 +17,25 @@
               </div>
             </div>
           </form>
-          <div class="content is-flex-centered gap-1">
+          <div class="is-flex-centered gap-1 ">
+            <a @click="$root.play" class="button is-medium is-info" :title="[
+              $root.t('play-against'),
+              $root.t('human')
+            ].join(' ')">
+              <span class="icon">
+                <span class="fa fa-handshake is-size-5"></span>
+              </span>
+            </a>
+            <router-link class="button is-medium is-success" to="/stockfish" :title="[
+              $root.t('play-against'),
+              $root.t('stockfish')
+            ].join(' ')">
+              <span class="icon">
+                <span class="fa fa-server is-size-5"></span>
+              </span>
+            </router-link>
+          </div>
+          <div class="content is-flex-centered flex-md-col gap-1">
             <div v-for="(item, index) in groups" :key="index">
               <router-link :to="`/group/${item._id}`" class="box">
                 <article>
@@ -25,7 +43,7 @@
                     <span>{{ item.code }}</span>
                     <span class="has-text-grey"> {{ item.users }}</span>
                   </h2>
-                  <p class="subtitle has-text-weight-bold">
+                  <p class="subtitle has-text-weight-bold has-text-centered">
                     <span class="icon">
                       <span class="mdi mdi-clock-fast"></span>
                     </span>
@@ -37,38 +55,8 @@
               </router-link>
             </div>
           </div>
-          <div class="columns is-flex-centered has-text-centered animated fadeIn delay">
-            <h5 class="has-text-centered">{{ 'play_against' | t }}</h5>
-          </div>
-          <div class="is-flex-centered gap-1">
-            <a @click="$root.play" class="button is-medium">
-              <!--span class="icon">
-                <span class="fa fa-handshake is-size-5"></span>
-              </span-->
-              <span>{{ 'human' | t }}</span>
-            </a>
-            <router-link class="button is-medium" to="/stockfish">
-              <!--span class="icon">
-                <span class="fa fa-server is-size-5"></span>
-              </span-->
-              <span>Stockfish</span>
-            </router-link>
-          </div>
-          <!--div class="is-flex-centered gap-1">
-            <h5 class="has-text-centered">{{ 'exhibit' | t }}</h5>
-          </div-->
-          <div class="is-flex-centered gap-1">
-            <div class="column">
-              <router-link class="button is-medium" to="/exhibit">
-                <!--span class="icon">
-                  <span class="fa fa-server is-size-5"></span>
-                </span-->
-                <span>{{ 'watch' | t }} Stockfish</span>
-              </router-link>
-            </div>
-          </div>
         </div>
-      </div>
+      </section>
     </div>
     <ul class="pieces is-hidden-mobile">
       <li class="black"></li>
@@ -92,6 +80,11 @@ import axios from 'axios'
 import { mapState } from 'vuex'
 export default {
   name: 'Landing',
+  sockets: {
+    groups (data) {
+      this.groups = data
+    }
+  },
   mounted () {
     const saved = JSON.parse(localStorage.getItem('player')) || {}
     axios.post('/group/random').then((res) => {
@@ -103,7 +96,7 @@ export default {
     if (saved.pieces) {
       document.querySelectorAll('.pieces li').forEach(e => {
         let li = window.getComputedStyle(e)
-        e.style.backgroundImage = li.getPropertyValue('background-image').replace('classic', saved.pieces)
+        e.style.backgroundImage = li.getPropertyValue('background-image').replace('cburnett', saved.pieces)
       })
     }
   },

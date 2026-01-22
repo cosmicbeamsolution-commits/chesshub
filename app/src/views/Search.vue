@@ -87,17 +87,17 @@ export default {
         var pages = []
         if (res.data.error) {
           if (res.data.error === 'not_enough_params') {
-            Snackbar('info', this.$root.t('results_toast'), 15000)
+            Snackbar('info', this.$root.t('results-toast'), 15000)
           }
         } else {
           if (res.data.count === 0) {
-            Snackbar('danger', t('results_nomatch'), 5000)
+            Snackbar('danger', t('results-nomatch'), 5000)
           } else {
             var numPages = Math.ceil(res.data.count / this.pager.limit)
             for (var i = 0; i < numPages; i++) {
               pages[i] = i * this.pager.limit
             }
-            Snackbar('success', t('results_found') + this.data.count + ' ' + (this.data.count > 1 ? t('games') : t('game')) + '. ' + t('showing_results') + (this.pager.offset + 1) + ' ' + t('to') + ' ' + (this.pager.offset + this.pager.limit > this.data.count ? this.data.count : this.pager.offset + this.pager.limit), 5000)
+            Snackbar('success', t('results-found') + this.data.count + ' ' + (this.data.count > 1 ? t('games') : t('game')) + '. ' + t('showing-results') + (this.pager.offset + 1) + ' ' + t('to') + ' ' + (this.pager.offset + this.pager.limit > this.data.count ? this.data.count : this.pager.offset + this.pager.limit), 5000)
           }
         }
 

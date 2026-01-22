@@ -97,10 +97,10 @@ export default {
               pages[i] = i * this.pager.limit
             }
             Snackbar('success', [
-              t('results_found'),
+              t('results-found'),
               this.data.count,
               this.data.count > 1 ? t('games') : t('game'),
-              t('showing_results'),
+              t('showing-results'),
               this.pager.offset + 1,
               t('to'),
               this.pager.offset + (this.pager.limit > this.data.count ? this.data.count : this.pager.offset) + this.pager.limit

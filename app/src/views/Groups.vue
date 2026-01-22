@@ -110,7 +110,7 @@ export default {
     search: function () {
       this.$root.loading = true
       const query = this.query.trim() || ''
-      this.$root.t('group_no_results', { q: query })
+      this.$root.t('group-no-results', { q: query })
       axios.post('/groups', { query: query, offset: this.offset, limit: this.limit }).then((res) => {
         this.data = res.data
 
@@ -121,7 +121,7 @@ export default {
           }
         } else {
           if (res.data.count === 0) {
-            Snackbar('warning', this.$root.t('group_no_results', { q: query }), 5000)
+            Snackbar('warning', this.$root.t('group-no-results', { q: query }), 5000)
           } else {
             var numPages = Math.ceil(res.data.count / this.limit)
             for (var i = 0; i < numPages; i++) {

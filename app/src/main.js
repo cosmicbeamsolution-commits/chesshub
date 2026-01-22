@@ -155,6 +155,11 @@ new Vue({ // eslint-disable-line no-new
         group: group
       })
     },
+    getPrivateRoom (id) {
+      return this.player?._id > id
+        ? `${this.player?._id}-${id}`
+        : `${id}-${this.player?._id}`
+    },
     createGroup () {
       const template = (`
 <div class='content'>
@@ -164,7 +169,7 @@ new Vue({ // eslint-disable-line no-new
         <span class='icon'>
           <span class='mdi mdi-retweet'></span>
         </span>
-        <span>Rondas</span>
+        <span>${this.$root.t('rounds')}</span>
       </h4>
       <div class='control has-text-centered column'>
         <div class='buttons levels has-addons groupgames' title='Nro. partidas de este match'>
@@ -183,10 +188,10 @@ new Vue({ // eslint-disable-line no-new
         <span class='icon'>
           <span class='mdi mdi-clock'></span>
         </span>
-        <span>Minutos</span>
+        <span>${this.$root.t('minutes')}</span>
       </h4>
       <div class='control has-text-centered column'>
-        <div class='buttons levels has-addons gameclock' title='Establece la duración de las partidas en minutos'>
+        <div class='buttons levels has-addons gameclock' title='${this.$root.t('rounds-title')}'>
           <button class='button is-toggle is-rounded has-background-success' title='Partidas de 3 minutos'>3'</button>
           <button class='button is-toggle' title='Partidas de 5 minutos'>5'</button>
           <button class='button is-toggle' title='Partidas de 10 minutos'>10'</button>

@@ -433,7 +433,6 @@ export default {
         }, 500)
 
         this.evaler = typeof STOCKFISH === 'function' ? STOCKFISH() : new Worker('/js/stockfish.js')
-
         this.evaler.onmessage = function (event) {
           var t = window.app
           var line
@@ -590,7 +589,9 @@ export default {
       if (move) {
         if (t.game.in_check() === true) {
           setTimeout(() => {
-            t.boardEl.querySelector('img[data-piece="' + t.game.turn() + 'K"]').parentNode.classList.add('in-check')
+            if (t.boardEl.querySelector('img[data-piece="' + t.game.turn() + 'K"]')) {
+              t.boardEl.querySelector('img[data-piece="' + t.game.turn() + 'K"]').parentNode.classList.add('in-check')
+            }
           }, 200)
         }
         t.boardEl.querySelector('.square-' + move.from).classList.add('highlight-move')

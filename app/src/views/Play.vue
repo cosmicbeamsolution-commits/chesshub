@@ -1404,7 +1404,7 @@ export default {
         values: [51],
         points: []
       },
-      secondsToProceed: 120,
+      secondsToProceed: 60,
       data: {},
       engineStatus: {},
       tab: 'pgn',

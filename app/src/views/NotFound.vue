@@ -16,9 +16,9 @@
             <span class="icon has-margin-right">
               <span class="mdi mdi-space-invaders"></span>
             </span>
-            <span>{{ 'resource_not_found' | t }}</span>
+            <span>{{ 'resource-not-found' | t }}</span>
           </h1>
-          <p>{{ 'resource_not_found_text' | t }}</p>
+          <p>{{ 'resource-not-found-text' | t }}</p>
         </div>
       </div>
     </div>
@@ -39,11 +39,11 @@ export default {
   },
   created () {
     let i = this.$route.path.replace('/', '')
-    if (this.$root.translations[i + '_content']) {
+    if (this.$root.translations[i + '-content']) {
       this.section = {
-        icon: this.$root.t(i + '_icon'),
-        title: this.$root.t(i + '_title'),
-        content: this.$root.t(i + '_content')
+        icon: this.$root.t(i + '-icon'),
+        title: this.$root.t(i + '-title'),
+        content: this.$root.t(i + '-content')
       }
     }
     this.$root.loading = false
