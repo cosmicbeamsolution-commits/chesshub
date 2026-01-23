@@ -17,23 +17,23 @@
             <h4>{{ 'level' | t }}</h4>
             <div class="control has-text-centered column">
               <div class="buttons levels has-addons">
-                <button class="button" @click="gameStart(0)">
+                <button class="button is-success" @click="gameStart(0)">
                   <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-0' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">0</span>
                 </button>
-                <button class="button" @click="gameStart(4)">
+                <button class="button is-success" @click="gameStart(4)">
                   <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-1' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">1</span>
                 </button>
-                <button class="button is-info" @click="gameStart(8)">
+                <button class="button is-success" @click="gameStart(8)">
                   <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-2' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">2</span>
                 </button>
-                <button class="button is-info" @click="gameStart(12)">
+                <button class="button is-warning" @click="gameStart(12)">
                   <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-3' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">3</span>
                 </button>
-                <button class="button is-warning" @click="gameStart(16)">
+                <button class="button is-danger" @click="gameStart(16)">
                   <span class="has-text-weight-bold is-hidden-mobile">{{ 'level-4' | t }}</span>
                   <span class="has-text-weight-bold is-hidden-tablet">4</span>
                 </button>
@@ -64,25 +64,22 @@
       </div>
       <div v-show="!toggleFullscreen" class="container board-assistant">
         <div class="columns is-mobile has-text-centered w-100">
-          <div class="white column is-paddingless">
+          <div class="white column is-flex is-paddingless">
             <span class="icon">
-              <span class="mdi mdi-checkbox-blank-circle" :class="{
-                'has-text-white' : playerColor === 'white',
-                'has-text-black' : playerColor === 'black'
-              }"></span>
+              <span class="mdi mdi-checkbox-blank-circle" :class="`has-text-{$playerColor}`"></span>
             </span>
             <span v-show="data.result==='1-0'">🏆</span>
-            <span class="has-text-weight-bold" v-html="player.code"></span>
+            <span class="is-size-6" v-html="player.code"></span>
           </div>
-          <div class="black column is-paddingless">
+          <div class="black column is-flex is-paddingless">
             <span class="icon">
               <span class="mdi mdi-checkbox-blank-circle" :class="{
-                'has-text-white' : playerColor === 'black',
-                'has-text-black' : playerColor === 'white'
+                'has-text-white': playerColor === 'black',
+                'has-text-black': playerColor === 'white'
               }"></span>
             </span>
             <span v-show="data.result==='0-1'">🏆</span>
-            <span class="has-text-weight-bold">{{ opponentName }}</span>
+            <span class="is-size-6">{{ opponentName }}</span>
             <span class="button bg-transparent is-small thinking" :class="{'is-loading' : isEngineRunning}"></span>
           </div>
         </div>
@@ -118,8 +115,8 @@
         <div class="columns has-text-centered">
           <div class="column">
             <div class="field gap-1">
-              <strong class="has-text-grey is-size-5">{{ eco }}</strong>
-              <span class="has-text-weight-bold is-size-5">{{ opening }}</span>
+              <strong class="has-text-grey is-size-5">{{ opening }}</strong>
+              <!--span class="has-text-weight-bold is-size-6">{{ opening }}</span-->
             </div>
             <!--div class="field">
               <span v-html="status" class="has-text-black"></span>

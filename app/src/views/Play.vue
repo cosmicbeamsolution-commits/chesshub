@@ -126,8 +126,7 @@
               <div class="columns has-text-centered">
                 <div class="column">
                   <div class="field gap-1">
-                    <b class="has-text-grey is-size-5">{{ eco }}</b>
-                    <span class="has-text-weight-bold is-size-5">{{ opening }}</span>
+                    <strong class="has-text-grey is-size-5">{{ opening }}</strong>
                   </div>
                   <div v-show="match.results" id="matchresults" class="columns is-mobile is-narrow">
                     <div class="column is-3">

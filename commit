@@ -1,0 +1,6 @@
+cd /var/www/chesshub/
+git add .
+git commit -m "autocommit"
+git push
+cd ./app
+export NODE_OPTIONS=--openssl-legacy-provider && npm run build

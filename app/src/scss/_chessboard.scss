@@ -84,6 +84,7 @@
 .bar, .moveRow, .moveRow a, .movew {
   background-color: #f1f1f1;
   color: #080808;
+  padding: 0.25rem 0.5rem;
 }
 .bar-progress, .moveb, .moveb a {
   background-color: #080808;
@@ -531,11 +532,9 @@ $blue: #4183d7;
   min-height: 150px;
   overflow-y: auto;
   text-align: left;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-radius: 5px;
 }
 .movesTable {
-  display: table;
   position: absolute;
   width: 100%;
   font-size: 1rem;
@@ -570,7 +569,7 @@ $blue: #4183d7;
   text-shadow: 0 0 1px rgba(255,255,255,0.4);   
 }
 .moveSAN {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .board-assistant {
