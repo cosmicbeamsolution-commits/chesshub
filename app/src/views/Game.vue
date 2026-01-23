@@ -87,10 +87,10 @@
                 </div>
                 <div class="column">
                   <div class="field gap-1">
-                    <strong v-show="data.eco" class="has-text-grey is-size-5">{{ data.eco }}</strong>
-                    <strong v-show="!data.eco" class="has-text-grey is-size-5">{{ ecode }}</strong>
-                    <span v-show="data.opening" class="is-size-5">{{ data.opening }}</span>
-                    <span v-show="!data.opening" class="is-size-5">{{ opening }}</span>
+                    <!--strong v-show="data.eco" class="has-text-grey is-size-5">{{ data.eco }}</strong>
+                    <strong v-show="!data.eco" class="has-text-grey is-size-5">{{ ecode }}</strong-->
+                    <strong v-show="data.opening" class="has-text-grey is-size-5">{{ data.opening }}</strong>
+                    <strong v-show="!data.opening" class="has-text-grey is-size-5">{{ opening }}</strong>
                   </div>
                   <!--div class="field">
                     <span v-html="score" class="has-text-black"></span>
@@ -239,7 +239,7 @@ export default {
             this.game.in_draw() === true ||
             this.gameMoves.length === 0) return
 
-        var perc = (this.index + 2) / this.gameMoves.length * 100
+        var perc = (this.index + 1) / this.gameMoves.length * 100
         if (perc > 100) {
           perc = 100
         }

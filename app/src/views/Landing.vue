@@ -17,7 +17,7 @@
               </div>
             </div>
           </form>
-          <div class="is-flex-centered gap-1 ">
+          <div class="is-flex-centered gap-1">
             <a @click="$root.play" class="button is-medium is-info" :title="[
               $root.t('play-against'),
               $root.t('human')

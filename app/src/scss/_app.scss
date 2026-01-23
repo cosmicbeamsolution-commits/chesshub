@@ -21,8 +21,9 @@ html, body {
   h5, 
   h6, 
   p,
+  a,
   li {
-  color: #f8f8f8!important;
+    color: #f8f8f8!important;
     &:hover {
       color: #888;
     }
@@ -70,8 +71,8 @@ html, body {
     background-color: #444;
     color: #999!important;    
   }
-  .table.is-striped tbody tr:not(.is-selected):nth-child(even)  {
-    background-color: #333;
+  .pietimer, .table.is-striped tbody tr:not(.is-selected):nth-child(even)  {
+    background-color: #333!important;
   }
   .table span {
     color: #f8f8f8;

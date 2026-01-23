@@ -100,6 +100,15 @@
               <div class="field-group">
                 <label class="label">{{ 'settings-general' | t }}</label>
                 <div class="field-body">
+                  <div class="control has-checkradio" title="Aceptar invitaciones de otros grupos">
+                    <input v-model="data.autoaccept" class="is-checkradio has-background-color is-white" id="autoaccept" type="checkbox">
+                    <label for="autoaccept">{{ 'accept-random' | t }}</label>
+                    <!--p class="notification is-warning">
+                      <small>Aceptar automáticamente todas las invitaciones para jugar</small>
+                    </p-->
+                  </div>
+                </div>
+                <div class="field-body">
                   <div class="control has-checkradio" title="Desactiva notificaciones sonoras">
                     <input v-model="data.sound" class="is-checkradio has-background-color is-white" id="sound" type="checkbox" @click="previewSound">
                     <label for="sound">{{ 'sound' | t }}</label>
@@ -129,15 +138,6 @@
                     <label for="observe">{{ 'observer_mode' | t }}</label>
                     <!--p class="notification is-warning">
                       <small>No disponible para jugar en línea</small>
-                    </p-->
-                  </div>
-                </div>
-                <div class="field-body">
-                  <div class="control has-checkradio" title="Aceptar invitaciones de otros grupos">
-                    <input v-model="data.autoaccept" class="is-checkradio has-background-color is-white" id="autoaccept" type="checkbox">
-                    <label for="autoaccept">{{ 'accept-random' | t }}</label>
-                    <!--p class="notification is-warning">
-                      <small>Aceptar automáticamente todas las invitaciones para jugar</small>
                     </p-->
                   </div>
                 </div>
@@ -275,10 +275,10 @@ export default {
       setTimeout(() => {
         if (this.data.strongnotification) {
           snackbarBar.classList.add('is-strong')
-          Snackbar('default', 'huge-notifications', 3000)
+          Snackbar('default', this.$root.t('huge-notifications'), 3000)
         } else {
           snackbarBar.classList.remove('is-strong')
-          Snackbar('default', 'normal-notifications', 3000)
+          Snackbar('default', this.$root.t('normal-notifications'), 3000)
         }
       }, 100)
     },

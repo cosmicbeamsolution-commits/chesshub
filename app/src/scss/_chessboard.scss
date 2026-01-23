@@ -421,9 +421,6 @@ $blue: #4183d7;
   .notation-322f9 {
     display: none;
   }
-  .media-left {
-    margin-right: 0.5rem;
-  }
   .media-content {
     span {
       display: blok;
@@ -494,17 +491,21 @@ $blue: #4183d7;
 .status {
   position: absolute;  
   z-index: 10;
-  right: 0.5rem;
-  bottom: 0.5rem;
+  bottom: -0.75rem;
+  right: 0.25rem;
+  left: 0;
 }
 
 .bar {
   position: relative;
   z-index: 99;
   cursor: pointer;
+  padding: 0;
+  background: #444;
   .bar-progress {
-    height: 0.5rem;
+    height: 0.75rem;
     width: 0;
+    background: #555;
   }  
   .bar-progress.paused {
     opacity: 0.5;

@@ -3,7 +3,8 @@ $duration: 60s;
 .pietimer {
   position: relative;
   margin: 40px auto;
-  background: transparent;
+  background-color: #fff;
+  border-radius: 100%;
 }
 
 .pietimer, .pietimer * {
@@ -52,7 +53,7 @@ $duration: 60s;
   width: 50%;
   height: 100%;
   position: absolute;
-  background: inherit;
+  background-color: inherit;
   opacity: 1;
   z-index: 300;
   animation: opa $duration steps(1, end);
