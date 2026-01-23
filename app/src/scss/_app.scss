@@ -464,6 +464,11 @@ span {
   min-height: 100%;
 }
 
+.is-translucid {
+  background-color: rgba(255,255,255,0.5);
+  backdrop-filter: blur(3px);
+}
+
 .hidden-loading {
   display: none;
 }

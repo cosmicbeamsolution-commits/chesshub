@@ -37,7 +37,7 @@
           </div>
           <div class="content is-flex-centered flex-md-col gap-1">
             <div v-for="(item, index) in groups" :key="index">
-              <router-link :to="`/group/${item._id}`" class="box">
+              <router-link :to="`/group/${item._id}`" class="box is-translucid">
                 <article>
                   <h2>
                     <span>{{ item.code }}</span>
