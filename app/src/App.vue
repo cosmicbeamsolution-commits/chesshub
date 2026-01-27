@@ -11,7 +11,7 @@
       <div class="is-flex is-flex-centered">
         <div class="column menu-logo has-text-left">
           <router-link to="/">
-            <img src="/img/logo.png" alt="Rittz">
+            <img src="/img/logo.png" alt="Blitzr">
           </router-link>
         </div>
         <div class="menu-container is-flex flex-nowrap is-vcentered">

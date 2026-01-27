@@ -2,7 +2,7 @@
 
 > Play online chess
 
-[Demo](https://Rittz.herokuapp.com).
+[Demo](https://Blitzr.herokuapp.com).
 
 ## Build Setup
 
