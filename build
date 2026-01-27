@@ -1,0 +1,4 @@
+git pull
+cd ./app
+export NODE_OPTIONS=--openssl-legacy-provider && npm run build
+echo "Bundle successfully generated"
