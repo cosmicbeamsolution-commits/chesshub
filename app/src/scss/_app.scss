@@ -21,7 +21,7 @@ html, body {
   h5, 
   h6, 
   p,
-  a,
+  a:not(.moveindex),
   li {
     color: #f8f8f8!important;
     &:hover {
@@ -47,19 +47,21 @@ html, body {
   .box {
     color: #f8f8f8;
     &:not(.bg-transparent) {
-      &:not(.is-danger) {
-        &:not(.is-warning) {
-          &:not(.is-success) {
-            &:not(.is-info) {
-              &:not(.is-text) {
-                &:not([class*="has-background-"]) {
+      background-color: #444;
+      border-color: #666;      
+    }
+    &:not(.is-danger) {
+      &:not(.is-warning) {
+        &:not(.is-success) {
+          &:not(.is-info) {
+            &:not(.is-text) {
+              &:not([class*="has-background-"]) {
+                background-color: #444;
+                border-color: #666;
+                &:hover {
                   background-color: #444;
-                  border-color: #666;
-                  &:hover {
-                    background-color: #444;
-                    color: #999!important;
-                  }                  
-                }
+                  color: #999!important;
+                }                  
               }
             }
           }
@@ -144,6 +146,10 @@ hr {
 
 label {
   padding-left: 0.25rem;
+  font-size: 0.75rem!important;
+  text-transform: uppercase;
+  font-weight: 500;
+  opacity: 0.5;  
 }
 
 * { 

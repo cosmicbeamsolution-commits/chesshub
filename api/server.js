@@ -22,6 +22,7 @@ var allowedOrigins = [
   'http://192.168.2.106:3000',
   'http://192.168.2.106:4000',
   'http://chesshub.com',
+  'https://blitzr.overlemon.com',
   'https://chesshub.overlemon.com',
   'https://chesshub-api.overlemon.com'
   //'https://flitz.herokuapp.com',
