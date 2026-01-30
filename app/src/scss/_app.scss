@@ -244,6 +244,10 @@ label {
   background-image: linear-gradient(180deg, rgba(200,200,200,0.5),rgba(255,255,255,0.75));
 }
 
+.is-padding-1 {
+  padding: 1rem!important;
+}
+
 .is-narrow {
   max-width: 20rem;
   margin: auto;

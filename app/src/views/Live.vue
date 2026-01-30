@@ -8,8 +8,8 @@
         <span>{{ 'live' | t }}</span>
       </h3>
       <form @submit.prevent="submit">
-        <label class="label"><span v-html="eco.name" class="has-text-grey"></span></label>
         <div class="field has-addons">
+          <label class="label"><span v-html="eco.name" class="has-text-grey"></span></label>
           <div class="control">
             <input ref="input" @keyup="inputTrigger" v-model="pager.query" class="input is-success" type="text" :placeholder="'live_input_placeholder' | t">
           </div>

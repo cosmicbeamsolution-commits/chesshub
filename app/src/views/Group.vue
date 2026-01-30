@@ -22,7 +22,7 @@
     <div v-show="data.owner" class="column fadeIn w-100">
       <div class="columns">
         <div v-if="players && data && data.owner" class="column content is-lobby-list is-3">
-          <div class="box" @click="checkGroupRules" :class="{ 'is-clickable': data.owner._id === player._id }">
+          <div class="box is-padding-1" @click="checkGroupRules" :class="{ 'is-clickable': data.owner._id === player._id }">
             <h3>
               <span class="icon">
                 <span class="mdi mdi-layers"></span>
@@ -164,7 +164,7 @@
                   <div class="control">
                     <input class="input" v-model="chat" type="text" :placeholder="'type-your-message' | t" />
                   </div>
-                  <div class="control has-text-left">
+                  <div class="control has-text-left" style="max-width: 2.5rem;">
                     <button type="submit" class="button is-info">
                       <span class="icon">
                         <span class="mdi mdi-arrow-up"></span>
@@ -503,24 +503,24 @@ export default {
           <input class="input groupcode" maxlength="15" value="${this.data.code}">
         </div>
       </div>
-      <label>
-        <span class="icon">
-          <span class="mdi mdi-pencil"></span>
-        </span>
-        <span>${this.$root.t('text')}</span>
-      </label>
       <div class="field">
+        <label>
+          <span class="icon">
+            <span class="mdi mdi-pencil"></span>
+          </span>
+          <span>${this.$root.t('text')}</span>
+        </label>
         <div class="control has-text-centered column">
           <textarea class="textarea description" rows="5">${this.data.text}</textarea>
         </div>
       </div>
-      <label>
-        <span class="icon">
-          <span class="mdi mdi-eye"></span>
-        </span>
-        <span>${this.$root.t('privacy')}</span>
-      </label>
       <div class="field">
+        <label>
+          <span class="icon">
+            <span class="mdi mdi-eye"></span>
+          </span>
+          <span>${this.$root.t('privacy')}</span>
+        </label>
         <div class="control has-text-centered column">
           <div class="buttons levels has-addons groupprivacy">
             <button class="button is-toggle">${this.$root.t('public')}</button>
@@ -530,13 +530,13 @@ export default {
       </div>
     </div>
     <div class="column">
-      <label>
-        <span class="icon">
-          <span class="mdi mdi-twitter-retweet"></span>
-        </span>
-        <span>${this.$root.t('rounds')}</span>
-      </label>
       <div class="field">
+        <label>
+          <span class="icon">
+            <span class="mdi mdi-twitter-retweet"></span>
+          </span>
+          <span>${this.$root.t('rounds')}</span>
+        </label>
         <div class="control has-text-centered column">
           <div class="buttons levels has-addons groupgames">
             <button class="button is-toggle has-background-success">1</button>
@@ -547,13 +547,13 @@ export default {
           </div>
         </div>
       </div>
-      <label>
-        <span class="icon">
-          <span class="mdi mdi-timer"></span>
-        </span>
-        <span>${this.$root.t('minutes')}</span>
-      </label>
       <div class="field">
+        <label>
+          <span class="icon">
+            <span class="mdi mdi-timer"></span>
+          </span>
+          <span>${this.$root.t('minutes')}</span>
+        </label>
         <div class="control has-text-centered column">
           <div class="buttons levels has-addons gameclock">
             <button class="button is-toggle">1'</button>
@@ -564,13 +564,13 @@ export default {
           </div>
         </div>
       </div>
-      <label>
-        <span class="icon">
-          <span class="mdi mdi-clock-fast"></span>
-        </span>
-        <span>${this.$root.t('compensation')}</span>
-      </label>
       <div class="field">
+        <label>
+          <span class="icon">
+            <span class="mdi mdi-clock-fast"></span>
+          </span>
+          <span>${this.$root.t('compensation')}</span>
+        </label>
         <div class="control has-text-centered column">
           <div class="buttons levels has-addons gamecompensation">
             <button class="button is-toggle">+0</button>

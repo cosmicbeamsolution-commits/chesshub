@@ -32,11 +32,11 @@
           </div>
         </div>
         <form @submit.prevent="sendChat">
-          <div class="field is-fullwidth has-addons has-addons-fullwidth is-marginless">
+          <div class="field is-fullwidth has-addons has-addons-fullwidth is-marginless fadeIn delay">
             <div class="control">
               <input class="input" v-model="chatInput" type="text" :placeholder="'type-your-message' | t" autofocus />
             </div>
-            <div class="control has-text-left">
+            <div class="control has-text-left" style="max-width: 2.5rem;">
               <button type="submit" class="button is-info">
                 <span class="icon">
                   <span class="mdi mdi-arrow-up"></span>

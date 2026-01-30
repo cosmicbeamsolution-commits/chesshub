@@ -1,6 +1,6 @@
 <template>
   <div class="container is-widescreen has-padding-bottom">
-    <section class="content column animated fadeIn">
+    <section class="content column animated is-paddingless fadeIn">
       <h3 class="title gap-1">
         <span class="icon">
           <span class="mdi mdi-account-cog"></span>
