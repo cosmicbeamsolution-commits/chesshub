@@ -1,7 +1,7 @@
 {
   "name": "Blitzr",
   "description": "Play online chess",
-  "version": "0.6.0",
+  "version": "0.6.72",
   "author": "liebsen",
   "license": "MIT",
   "scripts": {

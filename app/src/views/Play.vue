@@ -668,7 +668,7 @@ export default {
         whiteflag: white.flag,
         blackflag: black.flag,
         minutes: t.data.minutes,
-        games: t.data.games,
+        rounds: t.data.rounds,
         game: game,
         compensation: t.data.compensation,
         broadcast: true

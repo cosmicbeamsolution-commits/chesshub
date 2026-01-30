@@ -213,7 +213,7 @@ module.exports = (http, db) => {
 	        whiteflag: white.flag,
 	        blackflag: black.flag,
 	        minutes: item.minutes,
-	        games: item.games,
+	        rounds: item.rounds,
 	        game: 1,
 	        group: item._id,
 	        compensation: item.compensation,
@@ -299,7 +299,7 @@ module.exports = (http, db) => {
             code: e.code,
             text: e.text,
             users: e.users,
-            games: e.games,
+            rounds: e.rounds,
             minutes: e.minutes,
             compensation: e.compensation,
             date: e.date
@@ -350,7 +350,7 @@ module.exports = (http, db) => {
               code: e.code,
               text: e.text,
               users: e.users,
-              games: e.games,
+              rounds: e.rounds,
               minutes: e.minutes,
               compensation: e.compensation,
               date: e.date

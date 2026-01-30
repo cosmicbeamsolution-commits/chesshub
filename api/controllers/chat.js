@@ -13,7 +13,7 @@ module.exports = {
   random: (req, res) => {
     req.app.db.collection('chats').aggregate([
       { "$match" : { "broadcast": true } },
-      { "$project" : { code: 1, games: 1, minutes: 1, compensation: 1, users: 1 } },
+      { "$project" : { code: 1, rounds: 1, minutes: 1, compensation: 1, users: 1 } },
       {
         "$redact": {
             "$cond": [

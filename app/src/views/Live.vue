@@ -11,12 +11,13 @@
         <label class="label"><span v-html="eco.name" class="has-text-grey"></span></label>
         <div class="field has-addons">
           <div class="control">
-            <input ref="input" @keyup="inputTrigger" v-model="pager.query" class="input is-success" type="text" :placeholder="'live_input_placeholder' | t" autofocus>
+            <input ref="input" @keyup="inputTrigger" v-model="pager.query" class="input is-success" type="text" :placeholder="'live_input_placeholder' | t">
           </div>
           <div class="control">
             <button v-show="pager.query.length" type="button" @click="clear" class="button is-danger">
               <span class="icon">
-                <span class="mdi mdi-close"></span>
+                <span v-if="!loading" class="mdi mdi-close"></span>
+                <span v-else class="mdi mdi-timer"></span>
               </span>
             </button>
             <button v-show="!pager.query.length" type="submit" id="searchbtn" class="button is-success">
@@ -27,6 +28,23 @@
           </div>
         </div>
       </form>
+      <div v-show="message">
+        <h3>{{
+          $root.t(
+            'warning'
+          )
+        }}</h3>
+        <p>{{
+          $root.t(
+            'group-no-results', {
+              q: (
+                this.$root.t('live') +
+                (this.$route.params.query ? `:${this.$route.params.query}` : '')
+              )
+            }
+          )
+        }}</p>
+      </div>
       <div v-if="Object.keys(data).length" class="has-text-left">
         <div class="columns is-multiline">
           <div class="column is-12-mobile is-6-tablet is-4-desktop is-3-fullhd" v-for="(item, index) in data.games" :key="index">
@@ -51,27 +69,33 @@ export default {
     GameList
   },
   watch: {
-    '$route': function () {
+    '$route' () {
       this.triggerSearch()
     }
   },
-  mounted: function () {
+  mounted () {
     this.triggerSearch()
   },
   methods: {
-    inputTrigger: function () {
+    inputTrigger () {
+      this.loading = true
       if (this.interval) clearInterval(this.interval)
       this.interval = setTimeout(() => {
-        this.$router.push({ path: 'live', query: { q: this.pager.query } })
-      }, 1500)
+        this.$router.push({
+          name: 'Live',
+          params: {
+            query: this.pager.query
+          }
+        })
+      }, 1000)
     },
-    clear: function () {
+    clear () {
       this.pager.query = ''
       this.submit()
     },
-    triggerSearch: function () {
-      if (this.$route.query.q) {
-        this.pager.query = this.$route.query.q
+    triggerSearch () {
+      if (this.$route.params.query) {
+        this.pager.query = this.$route.params.query
       }
       if (this.$route.query.offset) {
         this.offset = parseInt(this.$route.query.offset)
@@ -79,7 +103,7 @@ export default {
       this.$nextTick(() => this.$refs.input.focus())
       this.search()
     },
-    search: function () {
+    search () {
       axios.post('/online', this.pager).then((res) => {
         this.data = res.data
         let t = this.$root.t
@@ -90,7 +114,8 @@ export default {
           }
         } else {
           if (res.data.count === 0) {
-            Snackbar('warning', 'No hay partidas en vivo', 5000)
+            this.message = 'No hay partidas en vivo'
+            // Snackbar('warning', 'No hay partidas en vivo', 5000)
           } else {
             var numPages = Math.ceil(res.data.count / this.pager.limit)
             for (var i = 0; i < numPages; i++) {
@@ -118,14 +143,21 @@ export default {
         this.$root.loading = false
       })
     },
-    submit: function () {
-      this.$router.push('/live?q=' + this.pager.query.trim())
+    submit () {
+      this.$router.push({
+        name: 'Live',
+        params: {
+          query: this.pager.query.trim()
+        }
+      })
     }
   },
   data () {
     return {
+      loading: false,
       data: {},
       eco: {},
+      message: '',
       pager: {
         pages: {},
         query: '',

@@ -42,13 +42,13 @@ const router = new Router({
     { path: '/search', name: 'Search', component: Search },
     { path: '/openings', name: 'Openings', component: Openings },
     { path: '/opening/:name', name: 'Opening', component: Opening },
-    { path: '/live', name: 'Live', component: Live },
+    { path: '/live/:query?', name: 'Live', component: Live },
     { path: '/dash', name: 'Dash', component: Dash },
     { path: '/game/:game', name: 'Game', component: Game },
     { path: '/play/:game/:id?', name: 'Play', component: Play },
     { path: '/watch/:game', name: 'Watch', component: Watch },
     { path: '/chat/:chat', name: 'Chat', component: Chat },
-    { path: '/groups', name: 'Groups', component: Groups },
+    { path: '/groups/:query?', name: 'Groups', component: Groups },
     { path: '/group/:group', name: 'Group', component: Group },
     { path: '/settings', name: 'Settings', component: Settings },
     { path: '/stockfish', name: 'Stockfish', component: Stockfish },
@@ -72,7 +72,7 @@ router.beforeEach(async (to, from, next) => {
         axios.get(`/json/lang/${res.lang}.json`).then(json => {
           router.app.translations = json.data
           // console.log('🙌 Player identification successfully performed')
-          router.app.$socket.emit('Settings', res)
+          // router.app.$socket.emit('Settings', res)
           next()
         })
       }).catch(err => {

@@ -167,17 +167,17 @@ new Vue({ // eslint-disable-line no-new
     <div class='column'>
       <h4>
         <span class='icon'>
-          <span class='mdi mdi-retweet'></span>
+          <span class='mdi mdi-twitter-retweet'></span>
         </span>
         <span>${this.$root.t('rounds')}</span>
       </h4>
       <div class='control has-text-centered column'>
         <div class='buttons levels has-addons groupgames' title='Nro. partidas de este match'>
           <button class='button is-toggle is-rounded has-background-success' title='Match a 1 partida'>1</button>
-          <button class='button is-toggle' title='Match a 3 partidas'>3</button>
-          <button class='button is-toggle' title='Match a 5 partidas al match'>5</button>
-          <button class='button is-toggle' title='Match a 10 partidas'>10</button>
-          <button class='button is-toggle is-rounded' title='Match a 16 partidas'>16</button>
+          <button class='button is-toggle'>3</button>
+          <button class='button is-toggle'>5</button>
+          <button class='button is-toggle'>10</button>
+          <button class='button is-toggle is-rounded choose-group-param' data-param='rounds'><i class='mdi mdi-plus'></i></button>
         </div>
       </div>
     </div>
@@ -192,10 +192,10 @@ new Vue({ // eslint-disable-line no-new
       </h4>
       <div class='control has-text-centered column'>
         <div class='buttons levels has-addons gameclock' title='${this.$root.t('rounds-title')}'>
-          <button class='button is-toggle is-rounded has-background-success' title='Partidas de 3 minutos'>3'</button>
-          <button class='button is-toggle' title='Partidas de 5 minutos'>5'</button>
-          <button class='button is-toggle' title='Partidas de 10 minutos'>10'</button>
-          <button class='button is-toggle is-rounded' title='Partidas de 30 minutos'>30'</button>
+          <button class='button is-toggle is-rounded has-background-success'>3'</button>
+          <button class='button is-toggle'>5'</button>
+          <button class='button is-toggle'>10'</button>
+          <button class='button is-toggle is-rounded choose-group-param' data-param='minutes'><i class='mdi mdi-plus'></i></button>
         </div>
       </div>
     </div>
@@ -204,16 +204,17 @@ new Vue({ // eslint-disable-line no-new
     <div class='column'>
       <h4>
         <span class='icon'>
-          <span class='mdi mdi-stopwatch'></span>
+          <span class='mdi mdi-timer'></span>
         </span>
-        <span>Compensación en segundos</span>
+        <span>${this.$root.t('compensation')}</span>
       </h4>
       <div class='control has-text-centered column'>
         <div class='buttons levels has-addons gamecompensation' title='Agregar compensación por movimiento'>
-          <button class='button is-toggle is-rounded' title='Partidas sin compensación por movimiento'>+0</button>
-          <button class='button is-toggle' title='Partidas con 1 segundo de compensación por cada movimiento'>+1</button>
-          <button class='button is-toggle has-background-success' title='Partidas con 2 segundos de compensación por cada movimiento'>+2</button>
-          <button class='button is-toggle is-rounded' title='Partidas con 3 segundos de compensación por cada movimiento'>+3</button>
+          <button class='button is-toggle is-rounded'>+0</button>
+          <button class='button is-toggle'>+1</button>
+          <button class='button is-toggle has-background-success'>+2</button>
+          <button class='button is-toggle is-rounded'>+3</button>
+          <button class='button is-toggle is-rounded choose-group-param' data-param='compensation'><i class='mdi mdi-plus'></i></button>
         </div>
       </div>
     </div>
@@ -236,7 +237,7 @@ new Vue({ // eslint-disable-line no-new
           var groupgames = document.querySelector('.groupgames > .has-background-success')
           var gamecompensation = document.querySelector('.gamecompensation > .has-background-success')
           var minutes = parseInt(gameclock?.textContent)
-          var games = parseInt(groupgames?.textContent)
+          var rounds = parseInt(groupgames?.textContent)
           var compensation = parseInt(gamecompensation?.textContent)
 
           swal({
@@ -251,7 +252,7 @@ new Vue({ // eslint-disable-line no-new
               code: code,
               owner: this.player,
               minutes: minutes,
-              games: games,
+              rounds: rounds,
               compensation: compensation
             }
 

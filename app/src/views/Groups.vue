@@ -10,12 +10,13 @@
       <form @submit.prevent="submit">
         <div class="field has-addons">
           <div class="control">
-            <input ref="input" @keyup="inputTrigger" v-model="query" class="input is-success" type="text" :placeholder="'name' | t" autofocus>
+            <input ref="input" @keyup="inputTrigger" v-model="query" class="input is-success" type="text" :placeholder="'name' | t">
           </div>
           <div class="control">
             <button v-show="query.length" type="button" @click="clear" class="button is-danger">
               <span class="icon has-margin">
-                <span class="mdi mdi-close"></span>
+                <span v-if="!loading" class="mdi mdi-close"></span>
+                <span v-else class="mdi mdi-timer"></span>
               </span>
             </button>
             <button v-show="!query.length" type="submit" id="searchbtn" class="button is-success">
@@ -26,7 +27,24 @@
           </div>
         </div>
       </form>
-      <div v-if="Object.keys(data).length" class="has-text-left">
+      <div v-show="message" class="column">
+        <h3>{{
+          $root.t(
+            'warning'
+          )
+        }}</h3>
+        <p>{{
+          $root.t(
+            'group-no-results', {
+              q: (
+                this.$root.t('groups') +
+                (this.$route.params.query ? `:${this.$route.params.query}` : '')
+              )
+            }
+          )
+        }}</p>
+      </div>
+      <div v-if="data.count" class="has-text-left">
         <table class="table">
           <thead>
             <th></th>
@@ -79,27 +97,33 @@ import Snackbar from '../components/Snackbar'
 export default {
   name: 'Groups',
   watch: {
-    '$route': function () {
+    '$route' () {
       this.triggerSearch()
     }
   },
-  mounted: function () {
+  mounted () {
     this.triggerSearch()
   },
   methods: {
-    inputTrigger: function () {
+    inputTrigger () {
+      this.loading = true
       if (this.interval) clearInterval(this.interval)
       this.interval = setTimeout(() => {
-        this.$router.push({ path: 'groups', query: { q: this.query } })
-      }, 1500)
+        this.$router.push({
+          name: 'Groups',
+          params: {
+            query: this.query
+          }
+        })
+      }, 1000)
     },
-    clear: function () {
+    clear () {
       this.query = ''
       this.submit()
     },
-    triggerSearch: function () {
-      if (this.$route.query.q) {
-        this.query = this.$route.query.q
+    triggerSearch () {
+      if (this.$route.params.query) {
+        this.query = this.$route.params.query
       }
       if (this.$route.query.offset) {
         this.offset = parseInt(this.$route.query.offset)
@@ -107,13 +131,15 @@ export default {
       this.$nextTick(() => this.$refs.input.focus())
       this.search()
     },
-    search: function () {
-      this.$root.loading = true
+    search () {
       const query = this.query.trim() || ''
-      this.$root.t('group-no-results', { q: query })
-      axios.post('/groups', { query: query, offset: this.offset, limit: this.limit }).then((res) => {
+      // this.$root.t('group-no-results', { q: query })
+      axios.post('/groups', {
+        query: query,
+        offset: this.offset,
+        limit: this.limit
+      }).then((res) => {
         this.data = res.data
-
         var pages = []
         if (res.data.error) {
           if (res.data.error === 'not_enough_params') {
@@ -121,7 +147,12 @@ export default {
           }
         } else {
           if (res.data.count === 0) {
-            Snackbar('warning', this.$root.t('group-no-results', { q: query }), 5000)
+            this.message = this.$root.t(
+              'group-no-results', {
+                q: query
+              }
+            )
+            // Snackbar('warning', this.$root.t('group-no-results', { q: query }), 5000)
           } else {
             var numPages = Math.ceil(res.data.count / this.limit)
             for (var i = 0; i < numPages; i++) {
@@ -138,17 +169,22 @@ export default {
 
         this.pages = pages
         this.$root.loading = false
+        this.loading = false
       })
     },
-    submit: function () {
-      this.$router.push('/groups?q=' + this.query.trim())
+    submit () {
+      this.$router.push({
+        name: 'Groups'
+      })
     }
   },
   data () {
     return {
+      loading: true,
       data: {},
       pages: {},
       query: '',
+      message: '',
       limit: 10,
       offset: 0
     }

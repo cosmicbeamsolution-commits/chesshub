@@ -151,7 +151,7 @@ module.exports = {
       whiteelo: req.body.whiteelo,
       blackelo: req.body.blackelo,
       minutes: req.body.minutes,
-      games: req.body.games,
+      rounds: req.body.rounds,
       game: req.body.game,
       compensation: req.body.compensation,
       date:moment().utc().format('YYYY.MM.DD HH:mm'),

@@ -53,7 +53,7 @@
                 <i class="mdi mdi-settings is-size-4"></i>
               </span>
             </router-link>
-            <span @click="saveSound" class="button is-small is-borderless bg-transparent" :title="$root.t('audio') + ' ' + $root.t('status-' + (player.sound ? 'on' : 'off'))">
+            <span @click="saveSound" class="button is-hidden-mobile is-small is-borderless bg-transparent" :title="$root.t('audio') + ' ' + $root.t('status-' + (player.sound ? 'on' : 'off'))">
               <i class="mdi is-size-4" :class="{
                 'mdi-headphones': player.sound,
                 'mdi-headphones-off has-text-grey': !player.sound,

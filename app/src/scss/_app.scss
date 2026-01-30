@@ -430,9 +430,15 @@ span {
   }
 }
 
+.menu-sm-hide-area {
+  .mdi-headphones {
+    position: relative;
+    top: 2px;
+  }
+}
 .tabs.is-marginless {
-  ul {
-    margin-right: 2rem;
+  li {
+    flex: 1;
   }
 }
 
@@ -568,8 +574,8 @@ span {
     width: 60px;
     height: 60px;
     border-radius: 100%;
-    right: 2px;
-    top: -2px;
+    right: 5px;
+    top: -1px;
     z-index: 100;
     color: white;
     cursor: pointer;
@@ -1253,7 +1259,7 @@ table {
 }
 .swal-title {
   margin-top: 1rem;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 .swal-button {
   border-radius: 30px;

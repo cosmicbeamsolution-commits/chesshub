@@ -50,6 +50,10 @@
                     <span>{{ item.minutes }}</span>
                     <span>+</span>
                     <span>{{ item.compensation }}</span>
+                    <span class="icon">
+                      <span class="mdi mdi-twitter-retweet"></span>
+                    </span>
+                    <span>{{ item.rounds }}</span>
                   </p>
                 </article>
               </router-link>
@@ -107,7 +111,12 @@ export default {
   },
   methods: {
     submit () {
-      this.$router.push('/groups?q=' + this.query)
+      this.$router.push({
+        name: 'Groups',
+        params: {
+          query: this.query
+        }
+      })
     }
   },
   data () {

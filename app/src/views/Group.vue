@@ -34,7 +34,7 @@
               <span class="d-block"><i class="mdi mdi-account"/> {{ data.owner.code }}</span>
               <span class="d-block"><i class="mdi mdi-calendar"/> {{ data.date }}</span>
               <span class="d-block"><i class="mdi mdi-clock-fast"/> {{ data.minutes }}'+{{ data.compensation }}</span>
-              <span class="d-block"><i class="mdi mdi-twitter-retweet"/> {{ data.games }}</span>
+              <span class="d-block"><i class="mdi mdi-twitter-retweet"/> {{ data.rounds }}</span>
             </div>
           </div>
           <div>
@@ -160,7 +160,7 @@
                 </div>
               </div>
               <form @submit.prevent="sendChat">
-                <div class="field is-fullwidth has-addons has-addons-fullwidth is-marginless">
+                <div class="field is-fullwidth has-addons has-addons-fullwidth is-marginless fadeIn delay">
                   <div class="control">
                     <input class="input" v-model="chat" type="text" :placeholder="'type-your-message' | t" />
                   </div>
@@ -223,6 +223,7 @@ export default {
       games: [],
       boards: [],
       data: {
+        text: '',
         results: []
       },
       group: {},
@@ -339,14 +340,14 @@ export default {
       if (data.player.code === this.player.code) {
         if (this.player.autoaccept) {
           axios.post(this.endpoint + '/game/create', {
-            event: `Match a ${data.games}`,
+            event: `Match a ${data.rounds}`,
             white: data.white.code,
             black: data.black.code,
             whiteflag: data.white.flag,
             blackflag: data.black.flag,
             group: id,
             minutes: data.minutes,
-            games: data.games,
+            rounds: data.rounds,
             compensation: data.compensation
           }).then((response) => {
             if (response.data.status === 'success') {
@@ -602,7 +603,7 @@ export default {
           var gamecompensation = document.querySelector('.gamecompensation > .has-background-success')
           var description = document.querySelector('.description')
           var minutes = parseInt(gameclock?.textContent)
-          var games = parseInt(groupgames?.textContent)
+          var rounds = parseInt(groupgames?.textContent)
           var compensation = parseInt(gamecompensation?.textContent)
           var code = groupcode?.value || ''
           var text = description?.value || ''
@@ -618,7 +619,7 @@ export default {
             let group = {
               _id: this.data._id,
               minutes: minutes,
-              games: games,
+              rounds: rounds,
               broadcast: broadcast,
               code: code,
               text: text,
@@ -636,7 +637,7 @@ export default {
         document.querySelectorAll('.groupgames .button').forEach(e => {
           let value = parseInt(e.innerHTML)
           e.classList.remove('has-background-success')
-          if (this.data.games === value) {
+          if (this.data.rounds === value) {
             e.classList.add('has-background-success')
           }
         })
@@ -968,7 +969,7 @@ export default {
           var white = this.player
           var black = player
           var minutes = parseInt(gameclock?.textContent)
-          var games = parseInt(groupgames?.textContent)
+          var rounds = parseInt(groupgames?.textContent)
           var compensation = parseInt(gamecompensation?.textContent)
 
           if (playercolor.classList.contains('is-black-pieces')) {
@@ -999,7 +1000,7 @@ export default {
             white: white,
             black: black,
             minutes: minutes,
-            games: games,
+            rounds: rounds,
             game: 1,
             compensation: compensation
           }

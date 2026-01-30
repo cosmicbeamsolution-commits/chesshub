@@ -1,4 +1,5 @@
 {
+  "warning": "Advertencia",
   "restart-match": "Reiniciar partida",
   "restart-match-ask": "¿Querés reiniciar esta partida?",
   "play-against-stockfish": "Jugar contra Stockfish",

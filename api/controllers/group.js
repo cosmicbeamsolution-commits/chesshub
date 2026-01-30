@@ -13,7 +13,7 @@ module.exports = {
   random: (req, res) => {
     req.app.db.collection('groups').aggregate([
       { "$match" : { "broadcast": true } },
-      { "$project" : { code: 1, games: 1, minutes: 1, compensation: 1, users: 1 } },
+      { "$project" : { code: 1, rounds: 1, minutes: 1, compensation: 1, users: 1 } },
       {
         "$redact": {
             "$cond": [
@@ -72,11 +72,12 @@ module.exports = {
   create: (req, res) => {
     const doc = {
       code: req.body.code,
-      owner: req.body.owner,
-      games: req.body.games,
+      text: req.body.text,
+      rounds: req.body.rounds,
       minutes: req.body.minutes,
       compensation: req.body.compensation,
       date: moment().utc().format('YYYY.MM.DD HH:mm'),
+      owner: req.body.owner,
       broadcast: true,
       chat: [],
       results: [],
