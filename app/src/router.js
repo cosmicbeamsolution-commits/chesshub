@@ -65,6 +65,7 @@ const router = new Router({
 router.beforeEach(async (to, from, next) => {
   await Vue.nextTick()
   router.app.loading = true
+
   if (!Object.keys(store.state.player).length) {
     store
       .dispatch('player')
