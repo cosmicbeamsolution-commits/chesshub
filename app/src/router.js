@@ -39,7 +39,7 @@ const router = new Router({
   mode: 'history',
   routes: [
     { path: '/', name: 'Landing', component: Landing },
-    { path: '/search', name: 'Search', component: Search },
+    { path: '/search/:query?', name: 'Search', component: Search },
     { path: '/openings', name: 'Openings', component: Openings },
     { path: '/opening/:name', name: 'Opening', component: Opening },
     { path: '/live/:query?', name: 'Live', component: Live },
